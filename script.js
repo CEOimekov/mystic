@@ -668,6 +668,13 @@ if (codeForm && accessCodeInput && codeError && status) {
       });
     }
     accessCodeInput.blur();
+    if (code) {
+      fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: code }),
+      }).catch(() => {});
+    }
     setTimeout(() => {
       window.location.href = "exam.html";
     }, 200);

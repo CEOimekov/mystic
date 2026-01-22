@@ -40,6 +40,24 @@
       <p class="start-error" id="codeError" role="alert" hidden>Enter a 6-digit start code.</p>
     </form>
 
+    <input id="code" placeholder="Введите код" />
+    <button id="send">Отправить</button>
+
+    <script>
+      document.getElementById("send").addEventListener("click", async () => {
+        const text = document.getElementById("code").value;
+
+        const r = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+
+        if (r.ok) alert("Отправлено!");
+        else alert("Ошибка отправки");
+      });
+    </script>
+
     <p class="start-footer">
       You can <button class="start-footer__link" type="button">review the instructions</button>
       that the proctor reads aloud.

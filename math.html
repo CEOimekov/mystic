@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math — вопросы</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="math-page">
+  <div class="exam-shell">
+    <div class="system-status" aria-hidden="true">
+      <span class="battery-percent">67%</span>
+      <svg class="battery-icon" viewBox="0 0 28 14" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="22" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" />
+        <rect x="3" y="3" width="16.5" height="8" rx="1" fill="currentColor" />
+        <rect x="23.5" y="4" width="3.5" height="6" rx="1" fill="currentColor" />
+      </svg>
+    </div>
+    <header class="exam-topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Section 2, Module 1: Math</div>
+        <button class="link-btn" type="button">
+          Directions <span class="caret caret--directions" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="topbar-center">
+        <div class="timer-stack">
+          <div class="timer" id="timer" aria-live="polite">31:50</div>
+          <button class="timer-hide" type="button">Hide</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="math-tools" aria-label="Tools">
+          <div class="math-tool">
+            <svg class="math-tool__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="4" y="3" width="16" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <rect x="7" y="6" width="10" height="4" fill="currentColor" />
+              <rect x="7.5" y="12.5" width="2" height="2" fill="currentColor" />
+              <rect x="11" y="12.5" width="2" height="2" fill="currentColor" />
+              <rect x="14.5" y="12.5" width="2" height="2" fill="currentColor" />
+              <rect x="7.5" y="16" width="2" height="2" fill="currentColor" />
+              <rect x="11" y="16" width="2" height="2" fill="currentColor" />
+              <rect x="14.5" y="16" width="2" height="2" fill="currentColor" />
+            </svg>
+            <span>Calculator</span>
+          </div>
+          <div class="math-tool">
+            <span class="math-tool__icon math-tool__icon--text">X²</span>
+            <span>Reference</span>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-icons">
+            <span class="icon icon-more" aria-hidden="true"></span>
+          </div>
+          <span class="action-text">More</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="progress-line progress-line--top"></div>
+
+    <main class="exam-main">
+      <section class="question-panel">
+        <header class="question-header">
+          <div class="question-meta">
+            <span class="question-number">1</span>
+            <div class="review-chip">
+              <svg class="bookmark-icon" viewBox="0 0 12 16" aria-hidden="true">
+                <path d="M2 1.5h8v12l-4-3-4 3z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" />
+              </svg>
+              <span>Mark for Review</span>
+            </div>
+          </div>
+          <button class="abc-btn" type="button">ABC</button>
+        </header>
+        <div class="progress-line progress-line--question"></div>
+
+        <div class="question-body">
+          <p class="question-text">Select the correct answer.</p>
+          <div class="option-list" role="radiogroup" aria-label="Ответы">
+            <label class="option">
+              <input type="radio" name="choice" value="A" />
+              <span class="option-letter">A</span>
+              <span class="option-text">Option A</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option A">A</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="B" />
+              <span class="option-letter">B</span>
+              <span class="option-text">Option B</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option B">B</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="C" />
+              <span class="option-letter">C</span>
+              <span class="option-text">Option C</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option C">C</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="D" />
+              <span class="option-letter">D</span>
+              <span class="option-text">Option D</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option D">D</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="progress-line progress-line--bottom"></div>
+
+    <footer class="exam-footer">
+      <div class="user-name">Artyom Li</div>
+
+      <div class="question-picker">
+        <button id="questionPickerBtn" class="question-picker__button">
+          <span class="question-picker__label">Question 1 of 22</span>
+          <span class="caret caret--picker" aria-hidden="true"></span>
+        </button>
+
+        <div id="questionPickerMenu" class="question-picker__menu" hidden>
+          <div class="question-picker__header">
+            <h2 class="question-picker__title">
+              Section 2, Module 1: Math
+              <span class="question-picker__title-break">Questions</span>
+            </h2>
+            <button class="question-picker__close" type="button" aria-label="Close question picker"></button>
+          </div>
+          <div class="question-picker__legend">
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--current"></span>
+              <span>Current</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--unanswered"></span>
+              <span>Unanswered</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--review"></span>
+              <span>For Review</span>
+            </div>
+          </div>
+          <div class="question-picker__grid" role="list"></div>
+          <div class="question-picker__footer">
+            <button class="question-picker__review-btn" type="button">Go to Review Page</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button id="backBtn" class="btn primary" type="button">Back</button>
+        <button id="nextBtn" class="btn primary" type="button">Next</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

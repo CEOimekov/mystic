@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review 2</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="review-page" data-review-total="27" data-review-context="reading2">
+  <div class="exam-shell review-shell">
+    <div class="system-status" aria-hidden="true">
+      <span class="battery-percent">65%</span>
+      <svg class="battery-icon" viewBox="0 0 28 14" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="22" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" />
+        <rect x="3" y="3" width="16.5" height="8" rx="1" fill="currentColor" />
+        <rect x="23.5" y="4" width="3.5" height="6" rx="1" fill="currentColor" />
+      </svg>
+    </div>
+    <header class="exam-topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Section 1, Module 2: Reading and Writing</div>
+        <button class="link-btn" type="button">
+          Directions <span class="caret caret--directions" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="topbar-center">
+        <div class="timer-stack">
+          <div class="timer" id="timer" aria-live="polite">31:50</div>
+          <button class="timer-hide" type="button">Hide</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="action-item">
+          <div class="action-icons">
+            <svg class="icon icon-pencil" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+            <svg class="icon icon-note" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M16 13H8" />
+              <path d="M16 17H8" />
+            </svg>
+          </div>
+          <span class="action-text">Highlights &amp; Notes</span>
+        </div>
+        <div class="action-item">
+          <div class="action-icons">
+            <span class="icon icon-more" aria-hidden="true"></span>
+          </div>
+          <span class="action-text">More</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="progress-line progress-line--top"></div>
+
+    <main class="review-main">
+      <h1 class="review-title">Check Your Work</h1>
+      <p class="review-text review-text--offset">On test day, you won't be able to move on to the next module until time expires.</p>
+      <p class="review-text">For these practice questions, you can click <strong>Next</strong> when you're ready to move on.</p>
+
+      <section class="review-card" aria-label="Review questions">
+        <div class="review-card__header">
+          <h2 class="review-card__title">Section 1, Module 2: Reading and Writing Questions</h2>
+          <div class="review-legend">
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--unanswered"></span>
+              <span>Unanswered</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--review"></span>
+              <span>For Review</span>
+            </div>
+          </div>
+        </div>
+        <div id="reviewGrid" class="review-grid" role="list"></div>
+      </section>
+    </main>
+
+    <div class="progress-line progress-line--bottom"></div>
+
+    <footer class="exam-footer review-footer">
+      <div class="user-name">Alikhan Imekov</div>
+      <div class="nav-buttons">
+        <button id="reviewBackBtn" class="btn primary" type="button">Back</button>
+        <button id="reviewNextBtn" class="btn primary" type="button">Next</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

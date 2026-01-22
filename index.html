@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Code</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="start-page">
+  <header class="start-topbar">
+    <button class="start-link start-link--help" type="button">
+      <span class="start-icon start-icon--help" aria-hidden="true">?</span>
+      Help
+    </button>
+    <button class="start-link start-link--home" type="button">
+      Return to Home
+      <svg class="start-icon start-icon--home" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 10.5L12 3l9 7.5" />
+        <path d="M5 10v10h14V10" />
+      </svg>
+    </button>
+  </header>
+
+  <main class="start-content">
+    <h1 class="start-title">Start Code</h1>
+    <p class="start-subtext">Enter your start code now to begin testing. Good luck!</p>
+    <p class="start-subtext start-subtext--note">The start code contains <strong class="start-bold">numbers only</strong>.</p>
+
+    <form id="codeForm" class="start-form" novalidate>
+      <div class="code-inputs" role="group" aria-label="Start code">
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1" />
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
+      </div>
+      <input id="accessCode" name="accessCode" type="hidden" />
+      <button type="submit" class="start-button">Start Test</button>
+      <p class="start-error" id="codeError" role="alert" hidden>Enter a 6-digit start code.</p>
+    </form>
+
+    <p class="start-footer">
+      You can <button class="start-footer__link" type="button">review the instructions</button>
+      that the proctor reads aloud.
+    </p>
+    <div class="sr-only" id="status" aria-live="polite">Waiting for code.</div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

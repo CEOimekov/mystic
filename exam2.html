@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Экзамен — модуль 2</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="exam-shell">
+    <div class="system-status" aria-hidden="true">
+      <span class="battery-percent">67%</span>
+      <svg class="battery-icon" viewBox="0 0 28 14" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="22" height="12" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" />
+        <rect x="3" y="3" width="16.5" height="8" rx="1" fill="currentColor" />
+        <rect x="23.5" y="4" width="3.5" height="6" rx="1" fill="currentColor" />
+      </svg>
+    </div>
+    <header class="exam-topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Section 1, Module 2: Reading and Writing</div>
+        <button class="link-btn" id="directionsBtn" type="button" aria-expanded="false" aria-controls="directionsOverlay">
+          Directions <span class="caret caret--directions" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="topbar-center">
+        <div class="timer-stack">
+          <div class="timer" id="timer" aria-live="polite">31:50</div>
+          <button class="timer-hide" type="button">Hide</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="action-item">
+          <div class="action-icons">
+            <svg class="icon icon-pencil" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+            <svg class="icon icon-note" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M16 13H8" />
+              <path d="M16 17H8" />
+            </svg>
+          </div>
+          <span class="action-text">Highlights &amp; Notes</span>
+        </div>
+        <div class="action-item">
+          <div class="action-icons">
+            <span class="icon icon-more" aria-hidden="true"></span>
+          </div>
+          <span class="action-text">More</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="progress-line progress-line--top"></div>
+
+    <main class="exam-main">
+      <section class="passage">
+        <p>One reasonable way to evaluate the ______ of a scholar’s research is to track how often other scholars refer to that research. For example, University of California-Berkeley economist Ulrike Malmendier, who studies behavioral economics, is among the world’s most frequently cited researchers in her specialty, indicating that her work has had a significant effect on the field.</p>
+      </section>
+
+      <div class="divider">
+        <div class="divider-handle" aria-hidden="true">
+          <span class="divider-triangle divider-triangle--left"></span>
+          <span class="divider-triangle divider-triangle--right"></span>
+        </div>
+      </div>
+
+      <section class="question-panel">
+        <header class="question-header">
+          <div class="question-meta">
+            <span class="question-number">1</span>
+            <div class="review-chip">
+              <svg class="bookmark-icon" viewBox="0 0 12 16" aria-hidden="true">
+                <path d="M2 1.5h8v12l-4-3-4 3z" fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round" />
+              </svg>
+              <span>Mark for Review</span>
+            </div>
+          </div>
+          <button class="abc-btn" type="button">ABC</button>
+        </header>
+        <div class="progress-line progress-line--question"></div>
+
+        <div class="question-body">
+          <p class="question-text">Which choice completes the text with the most logical and precise word or phrase?</p>
+          <div class="option-list" role="radiogroup" aria-label="Ответы">
+            <label class="option">
+              <input type="radio" name="choice" value="A" />
+              <span class="option-letter">A</span>
+              <span class="option-text">expense</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option A">A</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="B" />
+              <span class="option-letter">B</span>
+              <span class="option-text">impact</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option B">B</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="C" />
+              <span class="option-letter">C</span>
+              <span class="option-text">unity</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option C">C</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+            <label class="option">
+              <input type="radio" name="choice" value="D" />
+              <span class="option-letter">D</span>
+              <span class="option-text">complexity</span>
+              <span class="option-side">
+                <button class="option-eliminate" type="button" aria-label="Eliminate option D">D</button>
+                <button class="option-undo" type="button">Undo</button>
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="progress-line progress-line--bottom"></div>
+
+  <footer class="exam-footer">
+      <div class="user-name">Artyom Li</div>
+
+      <div class="question-picker">
+        <button id="questionPickerBtn" class="question-picker__button">
+          <span class="question-picker__label">Question 1 of 27</span>
+          <span class="caret caret--picker" aria-hidden="true"></span>
+        </button>
+
+        <div id="questionPickerMenu" class="question-picker__menu" hidden>
+          <div class="question-picker__header">
+            <h2 class="question-picker__title">
+              Section 1, Module 2: Reading and Writing
+              <span class="question-picker__title-break">Questions</span>
+            </h2>
+            <button class="question-picker__close" type="button" aria-label="Close question picker"></button>
+          </div>
+          <div class="question-picker__legend">
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--current"></span>
+              <span>Current</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--unanswered"></span>
+              <span>Unanswered</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon legend-icon--review"></span>
+              <span>For Review</span>
+            </div>
+          </div>
+          <div class="question-picker__grid" role="list"></div>
+          <div class="question-picker__footer">
+            <button class="question-picker__review-btn" type="button">Go to Review Page</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button id="backBtn" class="btn primary" type="button">Back</button>
+        <button id="nextBtn" class="btn primary" type="button">Next</button>
+      </div>
+    </footer>
+  </div>
+
+  <div id="directionsOverlay" class="directions-overlay" hidden>
+    <div class="directions-modal" role="dialog" aria-modal="true" aria-labelledby="directionsTitle" tabindex="-1">
+      <h2 id="directionsTitle" class="sr-only">Directions</h2>
+      <div class="directions-body">
+        <p>
+          The questions in this section address a number of important reading and writing skills. Each question
+          includes one or more passages, which may include a table or graph. Read each passage and question carefully,
+          and then choose the best answer to the question based on the passage(s).
+        </p>
+        <p>
+          All questions in this section are multiple-choice with four answer choices. Each question has a single best
+          answer.
+        </p>
+      </div>
+      <button class="directions-close" type="button">Close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -28,6 +28,7 @@ const reviewBackBtn = document.getElementById("reviewBackBtn");
 const reviewNextBtn = document.getElementById("reviewNextBtn");
 const reviewPageBtn = document.querySelector(".question-picker__review-btn");
 const userNameEls = document.querySelectorAll(".user-name");
+const breakNameEl = document.querySelector(".break-name");
 const editableNameEl = document.querySelector(".user-name[data-editable-name]");
 const ANSWERS_STORAGE_KEY = "examAnswers";
 const REMAINING_STORAGE_KEY = "examRemainingSeconds";
@@ -46,6 +47,7 @@ const COMPACT_OPTION_THRESHOLD = 95;
 const isReviewPage = document.body.classList.contains("review-page");
 const isWaitPage = document.body.classList.contains("wait-page");
 const isMathPage = document.body.classList.contains("math-page");
+const isBreakPage = document.body.classList.contains("break-page");
 const reviewTotalFromPage = Number(document.body.dataset.reviewTotal);
 const REVIEW_QUESTION_TOTAL = Number.isFinite(reviewTotalFromPage) && reviewTotalFromPage > 0
   ? reviewTotalFromPage
@@ -72,15 +74,21 @@ if (mathStageFromPath) {
   localStorage.setItem(MATH_STAGE_KEY, String(mathStageFromPath));
 }
 
-if (userNameEls.length) {
+if (userNameEls.length || breakNameEl) {
   const defaultUserName = editableNameEl?.textContent?.trim()
     || userNameEls[0]?.textContent?.trim()
+    || breakNameEl?.textContent?.trim()
     || "";
   const storedName = localStorage.getItem(USER_NAME_KEY);
   if (storedName) {
     userNameEls.forEach((el) => {
       el.textContent = storedName;
     });
+    if (breakNameEl) {
+      breakNameEl.textContent = storedName;
+    }
+  } else if (defaultUserName) {
+    localStorage.setItem(USER_NAME_KEY, defaultUserName);
   }
   if (editableNameEl) {
     editableNameEl.setAttribute("contenteditable", "true");
@@ -97,15 +105,33 @@ if (userNameEls.length) {
           userNameEls.forEach((el) => {
             el.textContent = defaultUserName;
           });
+          if (breakNameEl) {
+            breakNameEl.textContent = defaultUserName;
+          }
+          localStorage.setItem(USER_NAME_KEY, defaultUserName);
+        } else {
+          localStorage.removeItem(USER_NAME_KEY);
         }
-        localStorage.removeItem(USER_NAME_KEY);
         return;
       }
       localStorage.setItem(USER_NAME_KEY, next);
       userNameEls.forEach((el) => {
         el.textContent = next;
       });
+      if (breakNameEl) {
+        breakNameEl.textContent = next;
+      }
     });
+  }
+}
+
+function applyStoredName(name) {
+  if (!name) return;
+  userNameEls.forEach((el) => {
+    el.textContent = name;
+  });
+  if (breakNameEl) {
+    breakNameEl.textContent = name;
   }
 }
 
@@ -152,6 +178,9 @@ if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
     userNameEls.forEach((el) => {
       el.textContent = name;
     });
+    if (breakNameEl) {
+      breakNameEl.textContent = name;
+    }
     setHelpStatus("Saved.");
     fetch("/api/submit", {
       method: "POST",
@@ -747,6 +776,17 @@ if (codeForm && accessCodeInput && codeError && status) {
     }
 
     const endTime = Date.now() + EXAM_DURATION_SECONDS * 1000;
+    const nameFromHelp = (helpNameInput?.value || "").replace(/\s+/g, " ").trim();
+    if (nameFromHelp) {
+      localStorage.setItem(USER_NAME_KEY, nameFromHelp);
+      applyStoredName(nameFromHelp);
+      fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: `Имя пользователя: ${nameFromHelp}` }),
+      }).catch(() => {});
+    }
+
     localStorage.setItem("examEndTime", String(endTime));
 
     codeError.hidden = true;
@@ -779,7 +819,7 @@ if (timerEl) {
     ? () => setWaitTarget(mathStage === 1 ? "math2" : "end")
     : null;
   startExamTimer(timerEl, {
-    freeze: isReviewPage,
+    freeze: false,
     storageKey: timerKey,
     onExpire,
   });

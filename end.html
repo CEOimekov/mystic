@@ -7,8 +7,72 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="end-page">
+  <header class="end-topbar">
+    <button class="end-link end-link--help" type="button">
+      <span class="end-link__icon" aria-hidden="true">?</span>
+      Help
+    </button>
+    <button class="end-link end-link--home" type="button">
+      Return to Home
+      <svg class="end-home-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M3 10.5L12 3l9 7.5" />
+        <path d="M5 10v10h14V10" />
+        <circle cx="12" cy="8.5" r="1.2" />
+        <path d="M10 20v-4a2 2 0 0 1 4 0v4" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="end-confetti" aria-hidden="true"></div>
+
   <main class="end-main">
-    <h1 class="end-title">Test Complete</h1>
+    <h1 class="end-title">You're All Finished!</h1>
+
+    <section class="end-card" aria-label="Completion message">
+      <div class="end-illustration">
+        <img class="end-illustration__image" src="laptop.png" alt="Smiling laptop illustration" />
+      </div>
+      <div class="end-card__text">
+        <p class="end-card__copy">
+          Congratulations on<br />
+          completing an SAT practice<br />
+          test! See how you did on<br />
+          <strong>mypractice.cb.org.</strong>
+        </p>
+      </div>
+    </section>
+
+    <button class="end-button" type="button">View Your Score</button>
   </main>
+
+  <script>
+    const confettiRoot = document.querySelector(".end-confetti");
+    if (confettiRoot) {
+      const colors = [
+        "#f6c73e",
+        "#ff6b6b",
+        "#7bdff2",
+        "#ffd166",
+        "#9b5de5",
+        "#00bbf9",
+        "#ff9f1c",
+        "#2ec4b6",
+        "#f15bb5",
+        "#4cc9f0",
+        "#fde74c",
+      ];
+      const total = 72;
+      for (let i = 0; i < total; i += 1) {
+        const piece = document.createElement("span");
+        const x = ((i + 0.5) / total) * 100;
+        piece.style.setProperty("--x", x.toFixed(2));
+        piece.style.setProperty("--delay", `-${(Math.random() * 8).toFixed(2)}s`);
+        piece.style.setProperty("--duration", `${(7 + Math.random() * 3).toFixed(2)}s`);
+        piece.style.setProperty("--size", `${5 + Math.floor(Math.random() * 4)}`);
+        piece.style.setProperty("--color", colors[i % colors.length]);
+        confettiRoot.appendChild(piece);
+      }
+    }
+  </script>
 </body>
 </html>

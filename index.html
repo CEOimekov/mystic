@@ -8,7 +8,7 @@
 </head>
 <body class="start-page">
   <header class="start-topbar">
-    <button class="start-link start-link--help" type="button">
+    <button class="start-link start-link--help" type="button" id="helpNameBtn" aria-expanded="false" aria-controls="helpNamePanel">
       <span class="start-icon start-icon--help" aria-hidden="true">?</span>
       Help
     </button>
@@ -20,6 +20,15 @@
       </svg>
     </button>
   </header>
+
+  <div id="helpNamePanel" class="help-name-panel" hidden>
+    <div class="help-name-card" role="dialog" aria-modal="false" aria-labelledby="helpNameLabel">
+      <label class="help-name-label" id="helpNameLabel" for="helpNameInput">Your name</label>
+      <input id="helpNameInput" class="help-name-input" type="text" autocomplete="name" placeholder="Enter name" />
+      <button id="helpNameSave" class="help-name-save" type="button">Save</button>
+      <p id="helpNameStatus" class="help-name-status" aria-live="polite"></p>
+    </div>
+  </div>
 
   <main class="start-content">
     <h1 class="start-title">Start Code</h1>

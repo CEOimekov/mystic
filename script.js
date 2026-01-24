@@ -3,6 +3,11 @@ const accessCodeInput = document.getElementById("accessCode");
 const codeDigits = document.querySelectorAll(".code-digit");
 const codeError = document.getElementById("codeError");
 const status = document.getElementById("status");
+const helpNameBtn = document.getElementById("helpNameBtn");
+const helpNamePanel = document.getElementById("helpNamePanel");
+const helpNameInput = document.getElementById("helpNameInput");
+const helpNameSave = document.getElementById("helpNameSave");
+const helpNameStatus = document.getElementById("helpNameStatus");
 const timerEl = document.getElementById("timer");
 const breakTimerEl = document.getElementById("breakTimer");
 const hideBtn = document.querySelector(".timer-hide");
@@ -104,6 +109,75 @@ if (userNameEls.length) {
   }
 }
 
+if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
+  const setHelpStatus = (message, isError = false) => {
+    if (!helpNameStatus) return;
+    helpNameStatus.textContent = message;
+    helpNameStatus.classList.toggle("is-error", isError);
+  };
+
+  const closeHelpName = () => {
+    helpNamePanel.hidden = true;
+    helpNamePanel.style.display = "none";
+    helpNameBtn.setAttribute("aria-expanded", "false");
+  };
+
+  const openHelpName = () => {
+    helpNamePanel.hidden = false;
+    helpNamePanel.style.display = "block";
+    helpNameBtn.setAttribute("aria-expanded", "true");
+    helpNameInput.focus();
+  };
+
+  const storedName = localStorage.getItem(USER_NAME_KEY);
+  if (storedName) {
+    helpNameInput.value = storedName;
+  }
+
+  helpNameBtn.addEventListener("click", () => {
+    if (helpNamePanel.hidden) {
+      openHelpName();
+    } else {
+      closeHelpName();
+    }
+  });
+
+  helpNameSave.addEventListener("click", () => {
+    const name = (helpNameInput.value || "").replace(/\s+/g, " ").trim();
+    if (!name) {
+      setHelpStatus("Enter a name.", true);
+      return;
+    }
+    localStorage.setItem(USER_NAME_KEY, name);
+    userNameEls.forEach((el) => {
+      el.textContent = name;
+    });
+    setHelpStatus("Saved.");
+    fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: `Имя пользователя: ${name}` }),
+    }).catch(() => {});
+    closeHelpName();
+  });
+
+  helpNameInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      helpNameSave.click();
+    }
+    if (event.key === "Escape") {
+      closeHelpName();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (helpNamePanel.hidden) return;
+    if (helpNamePanel.contains(event.target) || helpNameBtn.contains(event.target)) return;
+    closeHelpName();
+  });
+}
+
 function getCurrentModule() {
   const stored = Number(localStorage.getItem(MODULE_STORAGE_KEY));
   if (Number.isFinite(stored) && stored > 0) return stored;
@@ -126,6 +200,22 @@ function getStoredMathStage() {
 
 function setReviewContext(context) {
   localStorage.setItem(REVIEW_CONTEXT_KEY, context);
+}
+
+function getAnswersContext() {
+  if (reviewContextFromPage) return reviewContextFromPage;
+  if (isReviewPage) {
+    const stored = localStorage.getItem(REVIEW_CONTEXT_KEY);
+    if (stored) return stored;
+  }
+  if (isMathPage) return `math${getMathStage()}`;
+  const moduleNumber = getCurrentModule();
+  return `reading${moduleNumber}`;
+}
+
+function getAnswersStorageKey(context = getAnswersContext()) {
+  if (!context) return ANSWERS_STORAGE_KEY;
+  return `${ANSWERS_STORAGE_KEY}_${context}`;
 }
 
 function setWaitTarget(target) {
@@ -550,7 +640,7 @@ const optionTextEls = document.querySelectorAll(".option-text");
 
 function getStoredAnswers() {
   try {
-    const raw = localStorage.getItem(ANSWERS_STORAGE_KEY);
+    const raw = localStorage.getItem(getAnswersStorageKey());
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === "object") return parsed;
@@ -564,7 +654,7 @@ function setStoredAnswer(questionNumber, choice) {
   if (!Number.isFinite(questionNumber)) return;
   const answers = getStoredAnswers();
   answers[String(questionNumber)] = choice;
-  localStorage.setItem(ANSWERS_STORAGE_KEY, JSON.stringify(answers));
+  localStorage.setItem(getAnswersStorageKey(), JSON.stringify(answers));
   updateQuestionPickerAnswered();
 }
 
@@ -1199,12 +1289,13 @@ if (isWaitPage) {
       const endTime = Date.now() + EXAM_DURATION_SECONDS * 1000;
       localStorage.setItem(MATH_END_STORAGE_KEY, String(endTime));
       localStorage.setItem(MATH_STAGE_KEY, "2");
-      localStorage.removeItem(ANSWERS_STORAGE_KEY);
+      localStorage.removeItem(getAnswersStorageKey("math1"));
       window.location.href = "math2.html";
       return;
     }
     if (waitTarget === "end") {
       setWaitTarget(null);
+      localStorage.removeItem(getAnswersStorageKey("math2"));
       window.location.href = "end.html";
       return;
     }
@@ -1218,7 +1309,7 @@ if (isWaitPage) {
       const endTime = Date.now() + EXAM_DURATION_SECONDS * 1000;
       localStorage.setItem("examEndTime", String(endTime));
       localStorage.setItem(REMAINING_STORAGE_KEY, String(EXAM_DURATION_SECONDS));
-      localStorage.removeItem(ANSWERS_STORAGE_KEY);
+      localStorage.removeItem(getAnswersStorageKey("reading1"));
       localStorage.setItem(MODULE_STORAGE_KEY, "2");
       window.location.href = "exam2.html";
       return;

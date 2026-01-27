@@ -231,15 +231,19 @@ body.start-page {
   text-align: left;
   font-size: 17.5px;
   line-height: 1.7;
-  color: #2b2f3a;
+  color: #171c22;
   padding-left: 0;
   margin-left: 0;
-  transform: translateX(161px);
+  transform: translateX(150px);
 }
 
 .end-card__copy {
   margin: 0;
   font-weight: 400;
+}
+
+.end-card__domain {
+  font-weight: 700;
 }
 
 .end-card__text p {

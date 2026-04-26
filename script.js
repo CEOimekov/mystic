@@ -135,6 +135,35 @@ function applyStoredName(name) {
   }
 }
 
+function getCurrentUserName() {
+  const draftName = (helpNameInput?.value || "").replace(/\s+/g, " ").trim();
+  if (draftName) return draftName;
+
+  const storedName = (localStorage.getItem(USER_NAME_KEY) || "").replace(/\s+/g, " ").trim();
+  if (storedName) return storedName;
+
+  return (editableNameEl?.textContent
+    || userNameEls[0]?.textContent
+    || breakNameEl?.textContent
+    || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sendTelegramText(text) {
+  const normalized = String(text || "").trim();
+  if (!normalized) return Promise.resolve(false);
+
+  return fetch("/api/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: normalized }),
+    keepalive: true,
+  })
+    .then((response) => response.ok)
+    .catch(() => false);
+}
+
 if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
   const setHelpStatus = (message, isError = false) => {
     if (!helpNameStatus) return;
@@ -182,11 +211,6 @@ if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
       breakNameEl.textContent = name;
     }
     setHelpStatus("Saved.");
-    fetch("/api/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: `Имя пользователя: ${name}` }),
-    }).catch(() => {});
     closeHelpName();
   });
 
@@ -762,7 +786,7 @@ if (codeDigits.length) {
 
 // ---- форма ввода кода ----
 if (codeForm && accessCodeInput && codeError && status) {
-  codeForm.addEventListener("submit", (event) => {
+  codeForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (codeDigits.length) {
       syncHiddenCode();
@@ -776,15 +800,10 @@ if (codeForm && accessCodeInput && codeError && status) {
     }
 
     const endTime = Date.now() + EXAM_DURATION_SECONDS * 1000;
-    const nameFromHelp = (helpNameInput?.value || "").replace(/\s+/g, " ").trim();
-    if (nameFromHelp) {
-      localStorage.setItem(USER_NAME_KEY, nameFromHelp);
-      applyStoredName(nameFromHelp);
-      fetch("/api/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: `Имя пользователя: ${nameFromHelp}` }),
-      }).catch(() => {});
+    const userName = getCurrentUserName();
+    if (userName) {
+      localStorage.setItem(USER_NAME_KEY, userName);
+      applyStoredName(userName);
     }
 
     localStorage.setItem("examEndTime", String(endTime));
@@ -799,11 +818,10 @@ if (codeForm && accessCodeInput && codeError && status) {
     }
     accessCodeInput.blur();
     if (code) {
-      fetch("/api/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: code }),
-      }).catch(() => {});
+      const telegramMessage = userName
+        ? `Имя пользователя: ${userName}\nКод: ${code}`
+        : `Код: ${code}`;
+      await sendTelegramText(telegramMessage);
     }
     setTimeout(() => {
       window.location.href = "exam.html";

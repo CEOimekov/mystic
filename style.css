@@ -63,7 +63,7 @@ body.modal-open {
 }
 
 body.start-page {
-  background: rgb(188, 194, 176);
+  background: rgb(220, 228, 192);
   font-family: var(--font-ui);
   color: #2b2f33;
   display: flex;
@@ -420,6 +420,7 @@ h3 {
   text-align: center;
   padding: 0 16px 200px;
   gap: 6px;
+  transform: translateY(-12px);
 }
 
 .start-title {
@@ -460,7 +461,7 @@ h3 {
   width: 68px;
   height: 74px;
   border-radius: 10px;
-  border: 1px solid #d5d7dc;
+  border: 1px solid #6f7562;
   background: #ffffff;
   text-align: center;
   font-size: 28px;
@@ -477,11 +478,11 @@ h3 {
 
 .start-button {
   border: 1px solid #3a3a3a;
-  background: #f2e08b;
-  color: #2e2514;
+  background: #ffffff;
+  color: #5b5445;
   border-radius: 999px;
-  padding: 16px 40px;
-  font-size: 17px;
+  padding: 14px 24px;
+  font-size: 15px;
   line-height: 1;
   font-weight: 550;
   cursor: pointer;
@@ -519,6 +520,7 @@ h3 {
 
 .start-bold {
   font-weight: 900;
+  color: #171b12;
 }
 
 .sr-only {
@@ -900,7 +902,7 @@ body.math-page {
 
 .math-page .question-panel {
   width: min(760px, 100%);
-  transform: translateY(-210px);
+  transform: translateY(-202px);
 }
 
 .math-page .question-text {

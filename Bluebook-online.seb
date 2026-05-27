@@ -5,7 +5,7 @@
     <key>originatorVersion</key>
     <string>SEB_Win_2.1.1</string>
     <key>startURL</key>
-    <string>https://ceoimekov.github.io/mystic/precheck/index.html</string>
+    <string>https://mystic-wine.vercel.app/precheck/index.html</string>
     <key>startResource</key>
     <string />
     <key>sebServerURL</key>

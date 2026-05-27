@@ -1,6 +1,40 @@
 .math-native-page .content-area {
   --math-ui-font: "Myriad Pro", "Myriad Pro Regular", "Helvetica Neue", Arial, sans-serif;
   position: relative;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.math-native-page {
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.math-native-page .window-frame {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.math-native-page .test-topbar,
+.math-native-page .math-progress-line,
+.math-native-page .test-bottombar {
+  flex: 0 0 auto;
+}
+
+.math-native-page .test-workspace {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.math-native-page .passage-pane,
+.math-native-page .question-pane {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .math-native-page .test-topbar,

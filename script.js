@@ -23,14 +23,17 @@ const directionsBtn = document.getElementById("directionsBtn");
 const directionsOverlay = document.getElementById("directionsOverlay");
 const directionsModal = directionsOverlay?.querySelector(".directions-modal");
 const directionsClose = directionsOverlay?.querySelector(".directions-close");
+const desmosCalculatorBtn = document.querySelector(".math-tool--calculator");
 const reviewGrid = document.getElementById("reviewGrid");
 const reviewBackBtn = document.getElementById("reviewBackBtn");
 const reviewNextBtn = document.getElementById("reviewNextBtn");
 const reviewPageBtn = document.querySelector(".question-picker__review-btn");
+const reviewChip = document.querySelector(".review-chip");
 const userNameEls = document.querySelectorAll(".user-name");
 const breakNameEl = document.querySelector(".break-name");
 const editableNameEl = document.querySelector(".user-name[data-editable-name]");
 const ANSWERS_STORAGE_KEY = "examAnswers";
+const REVIEW_MARKS_STORAGE_KEY = "reviewMarks";
 const REMAINING_STORAGE_KEY = "examRemainingSeconds";
 const MODULE_STORAGE_KEY = "examModule";
 const BREAK_END_STORAGE_KEY = "breakEndTime";
@@ -269,6 +272,11 @@ function getAnswersContext() {
 function getAnswersStorageKey(context = getAnswersContext()) {
   if (!context) return ANSWERS_STORAGE_KEY;
   return `${ANSWERS_STORAGE_KEY}_${context}`;
+}
+
+function getReviewMarksStorageKey(context = getAnswersContext()) {
+  if (!context) return REVIEW_MARKS_STORAGE_KEY;
+  return `${REVIEW_MARKS_STORAGE_KEY}_${context}`;
 }
 
 function setWaitTarget(target) {
@@ -680,20 +688,56 @@ const MATH_QUESTION_BANK = [
   }
 ];
 
-const QUESTION_TOTAL = isMathPage ? MATH_QUESTION_TOTAL : QUESTION_BANK.length;
+const IMPORTED_QUESTION_MODULES = window.BLUEBOOK_QUESTION_BANKS || {};
+const LEGACY_QUESTION_BANKS = {
+  reading1: QUESTION_BANK,
+  reading2: QUESTION_BANK,
+  math1: MATH_QUESTION_BANK,
+  math2: MATH_QUESTION_BANK,
+};
+
+function getQuestionBankForContext(context = getAnswersContext()) {
+  const importedModule = IMPORTED_QUESTION_MODULES[context];
+  if (importedModule?.questions?.length) {
+    return importedModule.questions;
+  }
+  return LEGACY_QUESTION_BANKS[context] || QUESTION_BANK;
+}
+
+function getQuestionTotalForContext(context = getAnswersContext()) {
+  const bank = getQuestionBankForContext(context);
+  if (bank.length) return bank.length;
+  return context?.startsWith("math") ? MATH_QUESTION_TOTAL : QUESTION_BANK.length;
+}
+
+const QUESTION_TOTAL = getQuestionTotalForContext();
 const FALLBACK_QUESTION = {
   passage: "Question text will be added here later.",
   prompt: DEFAULT_PROMPT,
   options: ["Option A", "Option B", "Option C", "Option D"],
 };
-const passageEl = document.querySelector(".passage p");
+const passageEl = document.querySelector(".passage");
 const questionTextEl = document.querySelector(".question-text");
 const optionListEl = document.querySelector(".option-list");
 const optionTextEls = document.querySelectorAll(".option-text");
+const abcBtn = document.querySelector(".abc-btn");
+let sprPanelEl = null;
 
 function getStoredAnswers() {
   try {
     const raw = localStorage.getItem(getAnswersStorageKey());
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") return parsed;
+  } catch (error) {
+    return {};
+  }
+  return {};
+}
+
+function getStoredReviewMarks(context = getAnswersContext()) {
+  try {
+    const raw = localStorage.getItem(getReviewMarksStorageKey(context));
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     if (parsed && typeof parsed === "object") return parsed;
@@ -708,7 +752,56 @@ function setStoredAnswer(questionNumber, choice) {
   const answers = getStoredAnswers();
   answers[String(questionNumber)] = choice;
   localStorage.setItem(getAnswersStorageKey(), JSON.stringify(answers));
-  updateQuestionPickerAnswered();
+  updateQuestionPickerState();
+  updateReviewGrid();
+}
+
+function clearStoredAnswer(questionNumber) {
+  if (!Number.isFinite(questionNumber)) return;
+  const answers = getStoredAnswers();
+  delete answers[String(questionNumber)];
+  localStorage.setItem(getAnswersStorageKey(), JSON.stringify(answers));
+  updateQuestionPickerState();
+  updateReviewGrid();
+}
+
+function setStoredReviewMark(questionNumber, marked) {
+  if (!Number.isFinite(questionNumber)) return;
+  const marks = getStoredReviewMarks();
+  if (marked) {
+    marks[String(questionNumber)] = true;
+  } else {
+    delete marks[String(questionNumber)];
+  }
+  localStorage.setItem(getReviewMarksStorageKey(), JSON.stringify(marks));
+  updateReviewChip(questionNumber);
+  updateQuestionPickerState();
+  updateReviewGrid();
+}
+
+function getQuestionUrlForContext(context, questionNumber) {
+  const safeQuestion = Math.max(1, Number(questionNumber) || 1);
+  if (context === "math1") return `math.html?question=${safeQuestion}`;
+  if (context === "math2") return `math2.html?question=${safeQuestion}`;
+  if (context === "reading2") return `exam2.html?question=${safeQuestion}`;
+  return `exam.html?question=${safeQuestion}`;
+}
+
+function resetExamProgress() {
+  ["reading1", "reading2", "math1", "math2"].forEach((context) => {
+    localStorage.removeItem(getAnswersStorageKey(context));
+    localStorage.removeItem(getReviewMarksStorageKey(context));
+  });
+  localStorage.removeItem(ANSWERS_STORAGE_KEY);
+  localStorage.removeItem(REVIEW_MARKS_STORAGE_KEY);
+  localStorage.removeItem(REMAINING_STORAGE_KEY);
+  localStorage.removeItem("examEndTime");
+  localStorage.removeItem(BREAK_END_STORAGE_KEY);
+  localStorage.removeItem(MATH_END_STORAGE_KEY);
+  localStorage.removeItem(MATH_STAGE_KEY);
+  localStorage.removeItem(REVIEW_CONTEXT_KEY);
+  localStorage.removeItem(WAIT_TARGET_KEY);
+  localStorage.setItem(MODULE_STORAGE_KEY, "1");
 }
 
 function getCurrentQuestionNumber() {
@@ -725,12 +818,16 @@ function getCurrentQuestionNumber() {
 
 function updateReviewGrid() {
   if (!reviewGrid) return;
+  const context = getAnswersContext();
   const answers = getStoredAnswers();
+  const marks = getStoredReviewMarks(context);
   const items = reviewGrid.querySelectorAll(".review-grid__item");
   items.forEach((item) => {
     const key = item.dataset.question || item.textContent?.trim();
     const answered = key && Object.prototype.hasOwnProperty.call(answers, key);
+    const marked = key && Object.prototype.hasOwnProperty.call(marks, key);
     item.classList.toggle("is-answered", answered);
+    item.classList.toggle("is-review", marked);
   });
 }
 
@@ -806,7 +903,9 @@ if (codeForm && accessCodeInput && codeError && status) {
       applyStoredName(userName);
     }
 
+    resetExamProgress();
     localStorage.setItem("examEndTime", String(endTime));
+    localStorage.setItem(REMAINING_STORAGE_KEY, String(EXAM_DURATION_SECONDS));
 
     codeError.hidden = true;
     status.textContent = `Code accepted: ${code}. Starting the exam...`;
@@ -856,7 +955,9 @@ function getStoredRemainingSeconds() {
 }
 
 function storeRemainingSecondsFromEndTime() {
-  const savedEnd = Number(localStorage.getItem("examEndTime"));
+  const savedEndRaw = localStorage.getItem("examEndTime");
+  if (!savedEndRaw) return;
+  const savedEnd = Number(savedEndRaw);
   if (!Number.isFinite(savedEnd)) return;
   const remainingSeconds = Math.max(0, Math.floor((savedEnd - Date.now()) / 1000));
   localStorage.setItem(REMAINING_STORAGE_KEY, String(remainingSeconds));
@@ -878,7 +979,8 @@ function startExamTimer(
   el,
   { freeze = false, storageKey = "examEndTime", onExpire = null } = {}
 ) {
-  const savedEnd = Number(localStorage.getItem(storageKey));
+  const savedEndRaw = localStorage.getItem(storageKey);
+  const savedEnd = savedEndRaw ? Number(savedEndRaw) : null;
   const hasSavedEnd = Number.isFinite(savedEnd);
   const isExpired = hasSavedEnd && savedEnd <= Date.now();
   const allowReset = storageKey === MATH_END_STORAGE_KEY && getMathStage() === 1;
@@ -1013,6 +1115,128 @@ if (directionsBtn && directionsOverlay) {
   setDirectionsOpen(true);
 }
 
+if (desmosCalculatorBtn) {
+  let calcModal = null;
+  let desmosCalc = null;
+  let lastFocusedBeforeDesmos = null;
+
+  const closeDesmosCalculator = () => {
+    if (!calcModal) return;
+    calcModal.style.display = "none";
+    if (lastFocusedBeforeDesmos && typeof lastFocusedBeforeDesmos.focus === "function") {
+      lastFocusedBeforeDesmos.focus();
+    }
+  };
+
+  const createCalculatorModal = () => {
+    const modal = document.createElement("div");
+    modal.id = "calc-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-label", "Desmos calculator");
+    modal.setAttribute("aria-modal", "false");
+    modal.tabIndex = -1;
+    modal.innerHTML = `
+      <div id="calc-header">
+        <span class="calc-header__title">Calculator</span>
+        <button class="calc-header__close" type="button" aria-label="Close calculator">Close</button>
+      </div>
+      <div id="calculator-container"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeBtn = modal.querySelector(".calc-header__close");
+    const header = modal.querySelector("#calc-header");
+    closeBtn?.addEventListener("click", closeDesmosCalculator);
+
+    if (header) {
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let startLeft = 0;
+      let startTop = 0;
+
+      const moveModal = (clientX, clientY) => {
+        const nextLeft = startLeft + clientX - startX;
+        const nextTop = startTop + clientY - startY;
+        const maxLeft = Math.max(0, window.innerWidth - modal.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - modal.offsetHeight);
+        modal.style.left = `${Math.min(maxLeft, Math.max(0, nextLeft))}px`;
+        modal.style.top = `${Math.min(maxTop, Math.max(0, nextTop))}px`;
+        modal.style.right = "auto";
+      };
+
+      header.addEventListener("pointerdown", (event) => {
+        if (event.target === closeBtn) return;
+        isDragging = true;
+        header.classList.add("is-dragging");
+        header.setPointerCapture(event.pointerId);
+        const rect = modal.getBoundingClientRect();
+        startX = event.clientX;
+        startY = event.clientY;
+        startLeft = rect.left;
+        startTop = rect.top;
+      });
+
+      header.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+        moveModal(event.clientX, event.clientY);
+      });
+
+      const stopDragging = (event) => {
+        if (!isDragging) return;
+        isDragging = false;
+        header.classList.remove("is-dragging");
+        header.releasePointerCapture(event.pointerId);
+      };
+
+      header.addEventListener("pointerup", stopDragging);
+      header.addEventListener("pointercancel", stopDragging);
+    }
+
+    return modal;
+  };
+
+  const openDesmosCalculator = () => {
+    lastFocusedBeforeDesmos = document.activeElement;
+    calcModal = calcModal || createCalculatorModal();
+    calcModal.style.display = "flex";
+
+    if (!desmosCalc) {
+      const calculatorContainer = calcModal.querySelector("#calculator-container");
+      if (calculatorContainer && window.Desmos?.GraphingCalculator) {
+        desmosCalc = window.Desmos.GraphingCalculator(calculatorContainer, {
+          keypad: true,
+          expressions: true,
+          settingsMenu: true,
+        });
+      } else if (calculatorContainer) {
+        calculatorContainer.textContent = "Calculator could not load. Check access to desmos.com.";
+        calculatorContainer.classList.add("calculator-container--error");
+      }
+    } else if (typeof desmosCalc.resize === "function") {
+      desmosCalc.resize();
+    }
+
+    calcModal.focus();
+  };
+
+  const toggleDesmosCalculator = () => {
+    if (calcModal && calcModal.style.display === "flex") {
+      closeDesmosCalculator();
+      return;
+    }
+    openDesmosCalculator();
+  };
+
+  window.toggleCalculator = toggleDesmosCalculator;
+  desmosCalculatorBtn.addEventListener("click", toggleDesmosCalculator);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && calcModal && calcModal.style.display === "flex") {
+      closeDesmosCalculator();
+    }
+  });
+}
+
 // ---- ползунок на центральной линии ----
 const divider = document.querySelector(".divider");
 const dividerHandle = divider?.querySelector(".divider-handle");
@@ -1096,13 +1320,18 @@ if (questionPickerBtn && questionPickerMenu) {
       btn.setAttribute("aria-label", `Question ${i}`);
       btn.addEventListener("click", () => {
         setCurrentQuestion(i);
+        setPickerVisibility(false);
       });
+      const marker = document.createElement("span");
+      marker.className = "question-state-marker";
+      marker.setAttribute("aria-hidden", "true");
+      btn.appendChild(marker);
       questionPickerGrid.appendChild(btn);
     }
   }
 
   setCurrentQuestion(currentQuestion);
-  updateQuestionPickerAnswered();
+  updateQuestionPickerState();
 
   if (backBtn) {
     backBtn.addEventListener("click", () => {
@@ -1113,7 +1342,7 @@ if (questionPickerBtn && questionPickerMenu) {
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
     if (currentQuestion >= QUESTION_TOTAL) {
-      const context = isMathPage ? `math${getMathStage()}` : "reading";
+      const context = getAnswersContext();
       setReviewContext(context);
       if (!isMathPage) {
         storeRemainingSecondsFromEndTime();
@@ -1195,38 +1424,208 @@ function updateQuestionPickerCurrent(current) {
   if (activeItem) activeItem.classList.add("is-current");
 }
 
-function updateQuestionPickerAnswered() {
+function updateQuestionPickerState() {
   if (!questionPickerGrid) return;
+  const context = getAnswersContext();
   const answers = getStoredAnswers();
+  const marks = getStoredReviewMarks(context);
   const items = questionPickerGrid.querySelectorAll(".question-picker__item");
   items.forEach((item) => {
     const key = item.dataset.question || item.textContent?.trim();
     const answered = key && Object.prototype.hasOwnProperty.call(answers, key);
+    const marked = key && Object.prototype.hasOwnProperty.call(marks, key);
     item.classList.toggle("is-answered", answered);
+    item.classList.toggle("is-review", marked);
   });
 }
 
-function renderQuestion(index) {
-  const bank = isMathPage ? MATH_QUESTION_BANK : QUESTION_BANK;
-  const data = bank[index - 1] || FALLBACK_QUESTION;
-  if (passageEl) passageEl.textContent = data.passage;
-  if (questionTextEl) questionTextEl.textContent = data.prompt;
-  if (optionTextEls.length) {
-    optionTextEls.forEach((el, i) => {
-      el.textContent = data.options[i] || "";
+function updateReviewChip(questionNumber = getCurrentQuestionNumber()) {
+  if (!reviewChip || !questionNumber) return;
+  const marks = getStoredReviewMarks();
+  const marked = Object.prototype.hasOwnProperty.call(marks, String(questionNumber));
+  reviewChip.classList.toggle("is-marked", marked);
+  reviewChip.setAttribute("aria-pressed", String(marked));
+}
+
+function sanitizeRichHTML(html) {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  template.content.querySelectorAll("script, iframe, object, embed, link, meta").forEach((el) => {
+    el.remove();
+  });
+  template.content.querySelectorAll("*").forEach((el) => {
+    Array.from(el.attributes).forEach((attr) => {
+      const name = attr.name.toLowerCase();
+      const value = attr.value.trim().toLowerCase();
+      if (name.startsWith("on") || value.startsWith("javascript:")) {
+        el.removeAttribute(attr.name);
+      }
     });
+  });
+  return template.innerHTML;
+}
+
+function buildRichHTML(value, { renderMath = isMathPage } = {}) {
+  let html = String(value ?? "");
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    html = html.replace(/\n/g, "<br>");
   }
+  if (renderMath && html.includes("$")) {
+    html = html.replace(/\$([^$]+)\$/g, '<span class="mq-math">$1</span>');
+  }
+  return sanitizeRichHTML(html);
+}
+
+function renderMathQuill(root) {
+  if (!root || !window.MQ) return;
+  root.querySelectorAll(".mq-math").forEach((el) => {
+    if (el.dataset.mathquillRendered) return;
+    try {
+      window.MQ.StaticMath(el);
+      el.dataset.mathquillRendered = "true";
+    } catch (error) {
+      el.textContent = el.textContent;
+    }
+  });
+}
+
+function setRichHTML(el, value, options) {
+  if (!el) return;
+  el.innerHTML = buildRichHTML(value, options);
+  renderMathQuill(el);
+}
+
+function ensureStudentProducedPanel() {
+  if (sprPanelEl) return sprPanelEl;
+  if (!optionListEl) return null;
+  sprPanelEl = document.createElement("div");
+  sprPanelEl.className = "spr-answer-panel";
+  sprPanelEl.hidden = true;
+  sprPanelEl.innerHTML = `
+    <div class="spr-answer-panel__directions">
+      <h3>Student-produced response</h3>
+      <p>Enter your answer in the box.</p>
+    </div>
+    <label class="spr-answer-label" for="sprAnswerInput">Answer</label>
+    <input id="sprAnswerInput" class="spr-answer-input" type="text" inputmode="decimal" maxlength="6" autocomplete="off" />
+    <div class="spr-answer-preview" aria-live="polite">
+      <span>Answer Preview:</span>
+      <strong class="spr-answer-preview__value"></strong>
+    </div>
+  `;
+  optionListEl.insertAdjacentElement("afterend", sprPanelEl);
+
+  const input = sprPanelEl.querySelector(".spr-answer-input");
+  const preview = sprPanelEl.querySelector(".spr-answer-preview__value");
+  input?.addEventListener("input", () => {
+    const nextValue = input.value.replace(/[^\d./-]/g, "").slice(0, 6);
+    if (input.value !== nextValue) {
+      input.value = nextValue;
+    }
+    if (preview) {
+      preview.textContent = nextValue;
+    }
+    const currentQuestion = getCurrentQuestionNumber();
+    if (!currentQuestion) return;
+    if (/\d/.test(nextValue)) {
+      setStoredAnswer(currentQuestion, nextValue);
+    } else {
+      clearStoredAnswer(currentQuestion);
+    }
+  });
+
+  return sprPanelEl;
+}
+
+function renderStudentProducedAnswer(savedAnswer) {
+  const panel = ensureStudentProducedPanel();
+  if (!panel) return;
+  const input = panel.querySelector(".spr-answer-input");
+  const preview = panel.querySelector(".spr-answer-preview__value");
+  const value = typeof savedAnswer === "string" ? savedAnswer : "";
+  if (input) {
+    input.value = value;
+  }
+  if (preview) {
+    preview.textContent = value;
+  }
+}
+
+function renderQuestion(index) {
+  const bank = getQuestionBankForContext();
+  const data = bank[index - 1] || FALLBACK_QUESTION;
+  const options = Array.isArray(data.options) ? data.options : [];
+  const isStudentProduced = isMathPage && options.length === 0;
+  const answers = getStoredAnswers();
+  const savedChoice = answers[String(index)];
+
+  if (passageEl && !isMathPage) {
+    setRichHTML(passageEl, data.passage, { renderMath: false });
+  }
+  if (questionTextEl) {
+    setRichHTML(questionTextEl, data.prompt, { renderMath: isMathPage });
+  }
+
+  if (abcBtn) {
+    abcBtn.hidden = isStudentProduced;
+  }
+
   if (optionListEl) {
-    const useCompact = (data.options || []).some(
+    optionListEl.hidden = isStudentProduced;
+    optionListEl.setAttribute("aria-hidden", String(isStudentProduced));
+    const useCompact = options.some(
       (option) => typeof option === "string" && option.length >= COMPACT_OPTION_THRESHOLD
     );
     optionListEl.classList.toggle("option-list--compact", useCompact);
   }
+
   const optionItems = document.querySelectorAll(".option");
-  optionItems.forEach((option) => {
+  optionItems.forEach((option, i) => {
+    option.hidden = isStudentProduced || i >= options.length;
     option.classList.remove("option--selected", "option--eliminated");
     const radio = option.querySelector('input[type="radio"]');
-    if (radio) radio.checked = false;
+    if (radio) {
+      const selected = !isStudentProduced && radio.value === savedChoice;
+      radio.checked = selected;
+      option.classList.toggle("option--selected", selected);
+    }
+  });
+
+  if (optionTextEls.length) {
+    optionTextEls.forEach((el, i) => {
+      setRichHTML(el, options[i] || "", { renderMath: isMathPage });
+    });
+  }
+
+  const sprPanel = ensureStudentProducedPanel();
+  if (sprPanel) {
+    sprPanel.hidden = !isStudentProduced;
+  }
+  if (isStudentProduced) {
+    renderStudentProducedAnswer(savedChoice);
+  }
+
+  updateReviewChip(index);
+}
+
+if (reviewChip) {
+  reviewChip.setAttribute("role", "button");
+  reviewChip.setAttribute("tabindex", "0");
+  updateReviewChip();
+
+  const toggleReviewMark = () => {
+    const currentQuestion = getCurrentQuestionNumber();
+    if (!currentQuestion) return;
+    const marks = getStoredReviewMarks();
+    const marked = Object.prototype.hasOwnProperty.call(marks, String(currentQuestion));
+    setStoredReviewMark(currentQuestion, !marked);
+  };
+
+  reviewChip.addEventListener("click", toggleReviewMark);
+  reviewChip.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    toggleReviewMark();
   });
 }
 
@@ -1280,16 +1679,14 @@ if (reviewBackBtn) {
       || localStorage.getItem(REVIEW_CONTEXT_KEY)
       || (storedMathStage ? `math${storedMathStage}` : null);
     if (context === "math1") {
-      window.location.href = `math.html?question=${MATH_QUESTION_TOTAL}`;
+      window.location.href = `math.html?question=${getQuestionTotalForContext("math1")}`;
       return;
     }
     if (context === "math2") {
-      window.location.href = `math2.html?question=${MATH_QUESTION_TOTAL}`;
+      window.location.href = `math2.html?question=${getQuestionTotalForContext("math2")}`;
       return;
     }
-    const moduleNumber = getCurrentModule();
-    const target = moduleNumber === 2 ? "exam2.html?question=27" : "exam.html?question=27";
-    window.location.href = target;
+    window.location.href = getQuestionUrlForContext(context, getQuestionTotalForContext(context));
   });
 }
 
@@ -1303,6 +1700,8 @@ if (reviewNextBtn) {
       setWaitTarget("math2");
     } else if (context === "math2") {
       setWaitTarget("end");
+    } else if (context === "reading2") {
+      setWaitTarget("break");
     } else {
       setWaitTarget(null);
     }
@@ -1312,7 +1711,7 @@ if (reviewNextBtn) {
 
 if (reviewPageBtn) {
   reviewPageBtn.addEventListener("click", () => {
-    const context = isMathPage ? `math${getMathStage()}` : "reading";
+    const context = getAnswersContext();
     setReviewContext(context);
     if (!isMathPage) {
       storeRemainingSecondsFromEndTime();
@@ -1324,6 +1723,7 @@ if (reviewPageBtn) {
 // ---- review grid (review.html) ----
 if (reviewGrid && reviewGrid.children.length === 0) {
   const total = REVIEW_QUESTION_TOTAL || QUESTION_TOTAL;
+  const context = getAnswersContext();
   for (let i = 1; i <= total; i++) {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -1331,6 +1731,13 @@ if (reviewGrid && reviewGrid.children.length === 0) {
     btn.textContent = String(i);
     btn.dataset.question = String(i);
     btn.setAttribute("aria-label", `Question ${i}`);
+    btn.addEventListener("click", () => {
+      window.location.href = getQuestionUrlForContext(context, i);
+    });
+    const marker = document.createElement("span");
+    marker.className = "question-state-marker";
+    marker.setAttribute("aria-hidden", "true");
+    btn.appendChild(marker);
     reviewGrid.appendChild(btn);
   }
 }

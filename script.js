@@ -42,6 +42,7 @@ const MATH_STAGE_KEY = "mathStage";
 const REVIEW_CONTEXT_KEY = "reviewContext";
 const WAIT_TARGET_KEY = "waitTarget";
 const USER_NAME_KEY = "userName";
+const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
 const WAIT_PAGE_URL = "wait.html";
 const BREAK_PAGE_URL = "break.html";
 const WAIT_DURATION_MS = 3500;
@@ -157,7 +158,7 @@ function sendTelegramText(text) {
   const normalized = String(text || "").trim();
   if (!normalized) return Promise.resolve(false);
 
-  return fetch("/api/submit", {
+  return fetch(TELEGRAM_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text: normalized }),

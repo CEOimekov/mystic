@@ -45,10 +45,44 @@
 .math-native-page .test-title {
   color: #1f1f1f;
   font-family: var(--math-ui-font) !important;
-  font-size: 17px !important;
-  font-weight: 550 !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
   line-height: 1.2;
   margin-bottom: 1px;
+}
+
+.math-native-page .test-directions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  color: #040404;
+  cursor: pointer;
+  font-family: var(--math-ui-font);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 0;
+}
+
+.math-native-page .caret {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  position: relative;
+  top: -1px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.math-native-page .caret--directions {
+  width: 9px;
+  height: 9px;
+  border-right-width: 1.25px;
+  border-bottom-width: 1.25px;
 }
 
 .math-native-page [data-timer-text] {
@@ -266,6 +300,7 @@
   width: 14px;
   height: 14px;
   border: 2px solid #222;
+  background: radial-gradient(circle at 50% 50%, #222 0 2px, transparent 2.5px);
   border-radius: 50%;
 }
 
@@ -587,16 +622,122 @@
   border: 2px solid transparent;
   border-radius: 8px;
   padding: 0;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  display: block;
+  position: relative;
 }
 
 .option-row.selected {
-  border-color: #324dc7;
+  border-color: #243f9f;
 }
 
 .option-row.selected .option-letter {
-  background: #324dc7;
+  background: #243f9f;
+  border-color: #243f9f;
   color: #fff;
+}
+
+.math-native-page .option-box {
+  align-items: flex-start;
+  border-color: #424750;
+  width: 100%;
+}
+
+.math-native-page .option-letter {
+  width: 24px !important;
+  height: 24px;
+  border: 2px solid #1f232b;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: #14171c;
+  font-family: var(--math-ui-font);
+  font-size: 13px;
+  font-weight: 500;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.math-native-page .option-side {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+}
+
+.math-native-page .option-eliminate,
+.math-native-page .option-undo {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--math-ui-font);
+}
+
+.math-native-page .option-eliminate {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #363b43;
+  border-radius: 50%;
+  color: #363b43;
+  font-size: 11px;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: transparent;
+}
+
+.math-native-page .option-eliminate::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 1px;
+  background: #2f333a;
+  transform: translate(-50%, -50%);
+}
+
+.math-native-page .option-undo {
+  display: none;
+  color: #1f232b;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.math-native-page .option-row--eliminated .option-text {
+  color: #8e93a0;
+  text-decoration: line-through;
+}
+
+.math-native-page .option-row--eliminated .option-box {
+  position: relative;
+}
+
+.math-native-page .option-row--eliminated .option-box::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 1px;
+  background: #2f333a;
+  pointer-events: none;
+}
+
+.math-native-page .option-row--eliminated .option-eliminate {
+  display: none;
+}
+
+.math-native-page .option-row--eliminated .option-undo {
+  display: inline-flex;
 }
 
 .mark-review {
@@ -606,6 +747,24 @@
 .mark-review:hover {
   color: #000;
   font-weight: 500;
+}
+
+.math-native-page .question-header {
+  background: #f2f2f2;
+}
+
+.math-native-page .q-num {
+  position: relative;
+  top: -1px;
+}
+
+.cross-out-abc-icon {
+  display: block;
+  width: 28px;
+  height: 26px;
+  margin-right: 12px;
+  cursor: pointer;
+  flex: 0 0 auto;
 }
 
 .test-bottombar {
@@ -618,6 +777,131 @@
   font-family: var(--math-ui-font);
   font-size: 17px;
   font-weight: 500;
+}
+
+.math-native-page .test-q-nav {
+  min-width: 154px;
+  height: 37px;
+  padding: 0 14px;
+  padding-right: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 6px;
+  justify-content: center;
+}
+
+.math-native-page #arrow {
+  width: 18px !important;
+}
+
+.math-native-page .test-bottombar > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+}
+
+.math-native-page .btn-blue {
+  border: none;
+  background: #2347b3;
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-family: var(--math-ui-font);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.math-native-page .btn-blue:hover {
+  background: #2347b3;
+}
+
+.math-native-page .spr-directions {
+  padding: 26px 18px 56px 0;
+  color: #1e1e1e;
+  font-family: "Noto Serif", "Times New Roman", serif;
+}
+
+.math-native-page .spr-directions h2 {
+  margin: 0 0 28px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.math-native-page .spr-directions ul {
+  margin: 0 0 38px 72px;
+  padding: 0;
+  font-size: 15.5px;
+  line-height: 1.42;
+}
+
+.math-native-page .spr-directions li {
+  margin: 4px 0;
+  padding-left: 8px;
+}
+
+.math-native-page .spr-directions strong {
+  font-weight: 700;
+}
+
+.math-native-page .spr-inline-fraction {
+  display: inline-block;
+  margin: 0 2px;
+  white-space: nowrap;
+}
+
+.math-native-page .spr-inline-fraction sup,
+.math-native-page .spr-inline-fraction sub {
+  font-size: 0.68em;
+  line-height: 0;
+}
+
+.math-native-page .spr-examples-title {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.math-native-page .spr-examples-table {
+  width: min(580px, 66%);
+  margin: 0 auto;
+  border-collapse: collapse;
+  color: #1e1e1e;
+  font-family: "Noto Serif", "Times New Roman", serif;
+  font-size: 16px;
+}
+
+.math-native-page .spr-examples-table th,
+.math-native-page .spr-examples-table td {
+  border: 1px solid #2d2d2d;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.math-native-page .spr-examples-table th {
+  padding: 24px 10px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.math-native-page .spr-answer-cell {
+  width: 24%;
+  padding: 48px 12px;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.math-native-page .spr-entry-cell {
+  width: 38%;
+  padding: 30px 12px;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.75;
+  letter-spacing: 0.04em;
 }
 
 .screen-review,

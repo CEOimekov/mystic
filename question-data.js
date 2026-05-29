@@ -323,7 +323,7 @@ window.BLUEBOOK_QUESTION_BANKS = {
         "options": [
           "Examples of Mesopotamian writing that are nearly 5,000 years old have been found.",
           "A language in ancient Mesopotamia used the cuneiform script for writing.",
-          "\nClay tablets with cuneiform script have been found in present-day Iraq.",
+          "Clay tablets with cuneiform script have been found in present-day Iraq.",
           "Sumerian, an ancient Mesopotamian language, was written using the cuneiform script."
         ]
       }

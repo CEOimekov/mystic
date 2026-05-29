@@ -1579,6 +1579,7 @@ button.math-tool:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #f2f2f2;
   margin-bottom: 6px;
   font-family: var(--font-ui);
 }
@@ -1731,7 +1732,7 @@ button.math-tool:focus-visible {
 
 .option {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   border: 1px solid #424750;
   border-radius: 12px;
@@ -1778,6 +1779,7 @@ button.math-tool:focus-visible {
 
 .option-letter {
   flex: 0 0 auto;
+  margin-top: 1px;
 }
 
 .option-list--compact .option {
@@ -1888,7 +1890,7 @@ button.math-tool:focus-visible {
 .option-eliminate {
   width: 20px;
   height: 20px;
-  border: 1.25px solid #363b43;
+  border: 1.5px solid #363b43;
   border-radius: 50%;
   color: #363b43;
   font-size: 11px;
@@ -1942,13 +1944,13 @@ button.math-tool:focus-visible {
 }
 
 .option--selected {
-  border: 2.5px solid #2a4fb8;
-  box-shadow: 0 0 0 3px rgba(42, 79, 184, 0.15);
+  border: 2.5px solid #243f9f;
+  box-shadow: none;
 }
 
 .option--selected .option-letter {
-  border-color: #2a4fb8;
-  background: #2a4fb8;
+  border-color: #243f9f;
+  background: #243f9f;
   color: #ffffff;
 }
 
@@ -1987,11 +1989,12 @@ button.math-tool:focus-visible {
   background: #000;
   color: #fff;
   border-radius: 5px;
-  padding: 12px 14px;
+  padding: 0 14px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  min-width: 150px;
+  min-width: 154px;
+  height: 37px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2110,6 +2113,7 @@ button.math-tool:focus-visible {
   border: 2px solid #222;
   border-radius: 50%;
   position: relative;
+  background: radial-gradient(circle at 50% 50%, #222 0 2px, transparent 2.5px);
 }
 
 .legend-icon--current::after {

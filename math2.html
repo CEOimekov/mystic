@@ -6,7 +6,7 @@
   <title>Section 2, Module 2: Math</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.css" />
   <link rel="stylesheet" href="precheck/static/css/styles.8d2d77d2c80f.css" />
-  <link rel="stylesheet" href="math-native.css?v=20260529-sprdir3" />
+  <link rel="stylesheet" href="math-native.css?v=20260529-name1" />
 </head>
 <body class="body-test math-native-page" data-math-stage="2">
   <div class="window-frame">
@@ -14,9 +14,12 @@
       <div class="test-topbar">
         <div class="test-info">
           <div class="test-title" id="ui-test-title" data-module-title>Section 2, Module 2: Math</div>
-          <button class="test-directions" type="button" onclick="document.getElementById('modal-directions').style.display='flex'">
-            Directions <span class="caret caret--directions" aria-hidden="true"></span>
-          </button>
+          <div class="test-directions" onclick="document.getElementById('modal-directions').style.display='flex'">
+            Directions
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
         </div>
 
         <div class="test-timer" style="position: absolute; left: 50%; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center;">
@@ -28,7 +31,7 @@
         <div class="test-tools" style="display: flex; align-items: center; gap: 16px; margin-top: 12px; margin-right: 18px;">
           <div style="display: flex; gap: 16px; align-items: flex-end;">
             <div class="tool-item" id="tool-calculator" onclick="app.toggleCalculator()">
-              <img src="precheck/static/images/calculator.fbdbbfd499eb.svg?v=20260529-dark1" style="height: 16px;" alt="" />
+              <img src="precheck/static/images/calculator.fbdbbfd499eb.svg" style="height: 16px;" alt="" />
               Calculator
             </div>
             <div class="tool-item">
@@ -67,7 +70,7 @@
                 Mark for Review
               </span>
             </div>
-            <img class="cross-out-abc-icon" src="precheck/static/images/cross-out-abc-blue.fc60b602ee82.svg?v=20260529-dark1" id="btn-cross-out" alt="" />
+            <img src="precheck/static/images/cross-out-abc.ad3fac4a1cc0.svg" id="btn-cross-out" style="width: 28px; height: 28px; cursor: pointer; margin-right: 12px;" alt="" />
           </div>
           <div class="math-question-progress-line" aria-hidden="true"></div>
           <div class="question-text" id="ui-question"></div>
@@ -128,9 +131,7 @@
         <div class="test-topbar">
           <div class="test-info">
             <div class="test-title" data-module-title>Section 2, Module 2: Math</div>
-            <button class="test-directions" type="button" onclick="document.getElementById('modal-directions').style.display='flex'">
-              Directions <span class="caret caret--directions" aria-hidden="true"></span>
-            </button>
+            <div class="test-directions" onclick="document.getElementById('modal-directions').style.display='flex'">Directions</div>
           </div>
           <div class="test-timer" style="position: absolute; left: 50%; transform: translateX(-50%); display:flex; flex-direction:column; align-items:center;">
             <img data-timer-icon src="precheck/static/images/timer.c20291d6cec9.svg" style="display:none;" alt="" />
@@ -139,7 +140,7 @@
           </div>
           <div class="test-tools" style="display: flex; align-items: center; gap: 8px;">
             <div class="tool-item" onclick="app.toggleCalculator()">
-              <img src="precheck/static/images/calculator.fbdbbfd499eb.svg?v=20260529-dark1" style="width: 20px; height: 20px;" alt="" />
+              <img src="precheck/static/images/calculator.fbdbbfd499eb.svg" style="width: 20px; height: 20px;" alt="" />
               Calculator
             </div>
             <div class="tool-item">
@@ -221,6 +222,6 @@
     window.MQ = window.MathQuill ? window.MathQuill.getInterface(2) : null;
   </script>
   <script src="question-data.js?v=20260524-native-math1"></script>
-  <script src="math-native.js?v=20260529-sprdir1"></script>
+  <script src="math-native.js?v=20260524-native-math1"></script>
 </body>
 </html>

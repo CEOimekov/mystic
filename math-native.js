@@ -16,8 +16,6 @@
   const answerStorageKey = `examAnswers_${context}`;
   const reviewStorageKey = `reviewMarks_${context}`;
   const timerStorageKey = `mathNativeEnd_${context}`;
-  const waitTargetKey = "waitTarget";
-  const waitPageUrl = "wait.html";
   const state = questions.map(() => ({ review: false, answer: null }));
 
   function normalizeQuestionHTML(value) {
@@ -276,111 +274,54 @@
           const row = document.createElement("div");
           row.className = "option-row";
           row.id = `opt-row-${optionLetter}`;
-          row.dataset.option = optionLetter;
+          row.addEventListener("click", () => this.selectOption(optionLetter));
           row.innerHTML = `
             <div class="option-box">
               <div class="option-letter">${optionLetter}</div>
               <div class="option-text">${optionText}</div>
             </div>
-            <div class="option-side">
-              <button class="option-eliminate" type="button" aria-label="Eliminate option ${optionLetter}">${optionLetter}</button>
-              <button class="option-undo" type="button">Undo</button>
-            </div>
           `;
           optionsList.appendChild(row);
         });
-        optionsList.onclick = (event) => {
-          const eliminateBtn = event.target.closest(".option-eliminate");
-          if (eliminateBtn && optionsList.contains(eliminateBtn)) {
-            event.preventDefault();
-            event.stopPropagation();
-            const row = eliminateBtn.closest(".option-row");
-            const option = row?.dataset.option;
-            if (!row || !option) return;
-            row.classList.add("option-row--eliminated");
-            if (state[this.qIdx].answer === option) {
-              state[this.qIdx].answer = null;
-              saveAnswer(this.qIdx);
-              this.syncSelections();
-            }
-            return;
-          }
-
-          const undoBtn = event.target.closest(".option-undo");
-          if (undoBtn && optionsList.contains(undoBtn)) {
-            event.preventDefault();
-            event.stopPropagation();
-            undoBtn.closest(".option-row")?.classList.remove("option-row--eliminated");
-            return;
-          }
-
-          const row = event.target.closest(".option-row");
-          if (!row || !optionsList.contains(row)) return;
-          row.classList.remove("option-row--eliminated");
-          this.selectOption(row.dataset.option);
-        };
         this.updateQuestionPanePosition();
       }
 
       document.getElementById("btn-back").style.display = this.qIdx > 0 ? "inline-block" : "none";
+      this.syncSelections();
       renderMathQuill(questionElement);
       renderMathQuill(passagePane);
       renderMathQuill(optionsList);
-      this.syncSelections();
     },
 
     getSPRRulesHTML() {
       return `
-        <div class="spr-directions">
-          <h2>Student-produced response directions</h2>
-          <ul>
-            <li>If you find <strong>more than one correct answer</strong>, enter only one answer.</li>
-            <li>You can enter up to 5 characters for a <strong>positive</strong> answer and up to 6 characters (including the negative sign) for a <strong>negative</strong> answer.</li>
-            <li>If your answer is a <strong>fraction</strong> that doesn&rsquo;t fit in the provided space, enter the decimal equivalent.</li>
-            <li>If your answer is a <strong>decimal</strong> that doesn&rsquo;t fit in the provided space, enter it by truncating or rounding at the fourth digit.</li>
-            <li>If your answer is a <strong>mixed number</strong> (such as 3<span class="spr-inline-fraction"><sup>1</sup>&frasl;<sub>2</sub></span>), enter it as an improper fraction (7/2) or its decimal equivalent (3.5).</li>
-            <li>Don&rsquo;t enter <strong>symbols</strong> such as a percent sign, comma, or dollar sign.</li>
+        <div style="padding: 20px; font-family: 'Noto Serif', serif; color: #1e1e1e">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px; margin-left: -20px; padding-left: 0;">Student-produced response directions</h2>
+          <ul style="font-size: 15px; margin-bottom: 24px; margin-left: 24px; line-height: 1.5; font-family: 'Noto Serif', serif;">
+            <li>If you find <b>more than one correct answer</b>, enter only one answer.</li>
+            <li>You can enter up to 5 characters for a <b>positive</b> answer and up to 6 characters for a <b>negative</b> answer.</li>
+            <li>If your answer is a <b>fraction</b> that doesn't fit, enter the decimal equivalent.</li>
+            <li>If your answer is a <b>decimal</b> that doesn't fit, truncate or round at the fourth digit.</li>
+            <li>If your answer is a <b>mixed number</b>, enter it as an improper fraction or decimal.</li>
+            <li>Don't enter <b>symbols</b> such as a percent sign, comma, or dollar sign.</li>
           </ul>
-
-          <div class="spr-examples-title">Examples</div>
-          <table class="spr-examples-table">
-            <thead>
-              <tr>
-                <th>Answer</th>
-                <th>Acceptable ways to<br>enter answer</th>
-                <th>Unacceptable: will<br>NOT receive credit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="spr-answer-cell">3.5</td>
-                <td class="spr-entry-cell">
-                  <div>3.5</div>
-                  <div>3.50</div>
-                  <div>7/2</div>
-                </td>
-                <td class="spr-entry-cell">
-                  <div>31/2</div>
-                  <div>3 1/2</div>
-                </td>
-              </tr>
-              <tr>
-                <td class="spr-answer-cell">$\\frac{2}{3}$</td>
-                <td class="spr-entry-cell">
-                  <div>2/3</div>
-                  <div>.6666</div>
-                  <div>.6667</div>
-                  <div>0.666</div>
-                  <div>0.667</div>
-                </td>
-                <td class="spr-entry-cell">
-                  <div>0.66</div>
-                  <div>.66</div>
-                  <div>0.67</div>
-                  <div>.67</div>
-                </td>
-              </tr>
-            </tbody>
+          <div style="text-align: center; width: 100%; margin-bottom: 4px; font-size: 15px;">Examples</div>
+          <table class="spr-table" style="width: 70%; border-collapse: collapse; font-size: 14px; margin: 0 auto; color: #1e1e1e;">
+            <tr>
+              <th style="border: 1px solid #505050; padding: 24px 12px; font-weight: 500; font-size: 15px; text-align: center;"><br>Answer</th>
+              <th style="border: 1px solid #505050; padding: 24px 4px; font-weight: 500; font-size: 15px; text-align: center;">Acceptable ways to<br>enter answer</th>
+              <th style="border: 1px solid #505050; padding: 24px 4px; font-weight: 500; font-size: 15px; text-align: center;">Unacceptable: will<br>NOT receive credit</th>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #505050; padding: 36px; text-align: center; font-weight: 500;">$3.5$</td>
+              <td style="border: 1px solid #505050; padding: 24px 18px 24px 54px; text-align: left; font-family: monospace;"><p>3.5</p><br><p>3.50</p><br><p>7/2</p></td>
+              <td style="border: 1px solid #505050; padding: 24px 18px 24px 54px; text-align: left; font-family: monospace;"><p>31/2</p><br><p>3 1/2</p></td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #505050; padding: 36px; text-align: center; font-weight: 500;">$\\frac{2}{3}$</td>
+              <td style="border: 1px solid #505050; padding: 24px 18px 24px 54px; text-align: left; font-family: monospace;"><p>2/3</p><br><p>.666</p><br><p>.667</p><br><p>0.666</p><br><p>0.667</p></td>
+              <td style="border: 1px solid #505050; padding: 24px 18px 24px 54px; text-align: left; font-family: monospace;"><p>0.66</p><br><p>.66</p><br><p>0.67</p><br><p>.67</p></td>
+            </tr>
           </table>
         </div>
       `;
@@ -428,7 +369,6 @@
     },
 
     selectOption(option) {
-      if (!option) return;
       state[this.qIdx].answer = state[this.qIdx].answer === option ? null : option;
       saveAnswer(this.qIdx);
       this.syncSelections();
@@ -525,9 +465,11 @@
 
     finishModule() {
       document.getElementById("screen-review").style.display = "none";
+      document.getElementById("screen-loading").style.display = "flex";
       localStorage.removeItem(timerStorageKey);
-      localStorage.setItem(waitTargetKey, stage === 1 ? "math2" : "end");
-      window.location.href = waitPageUrl;
+      setTimeout(() => {
+        window.location.href = stage === 1 ? "math2.html" : "end.html";
+      }, 700);
     },
 
     toggleCalculator() {

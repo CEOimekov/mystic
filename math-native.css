@@ -613,6 +613,13 @@
   background-image: none;
 }
 
+.math-native-page .test-student-name {
+  color: #4a4f57;
+  font-family: var(--math-ui-font);
+  font-size: 17px;
+  font-weight: 500;
+}
+
 .screen-review,
 .screen-loading {
   display: none;

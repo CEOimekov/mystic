@@ -78,8 +78,8 @@
 
                         <div class="reg-location">
                             
-                            <strong>QSI INTL SCH ASTANA</strong>
-                            <p>17 BAYAN SULU STREET<br>KOMSOMOLSKIY VILLAGE<br>ASTANA, KZ</p>
+                            <strong id="test-center-name">QSI INTL SCH ASTANA</strong>
+                            <p id="test-center-address">17 BAYAN SULU STREET<br>KOMSOMOLSKIY VILLAGE<br>ASTANA, KZ</p>
                             
                         </div>
                     </div>
@@ -184,28 +184,99 @@
     </div>
 </div>
 
+<script src="../static/student-records.js"></script>
 <script>
 	    const profilePic = document.getElementById('profile-pic');
 	    const profileModal = document.getElementById('profile-modal');
 	    const closeModalBtn = document.getElementById('close-modal-btn');
 	    const profileForm = document.getElementById('profile-form');
 	    const fullNameInput = document.getElementById('full_name');
+	    const testCenterAddressInput = document.getElementById('test_center_address');
 	    const profileNameDisplay = document.getElementById('profile-name-display');
 	    const welcomeNameDisplay = document.getElementById('welcome-name-display');
+	    const testCenterNameDisplay = document.getElementById('test-center-name');
+	    const testCenterAddressDisplay = document.getElementById('test-center-address');
 	    const studentNameKey = 'bluebookStudentName';
+	    const studentEmailKey = 'bluebookStudentEmail';
 	    const legacyNameKey = 'userName';
 
 	    function cleanStudentName(value) {
 	        return (value || '').replace(/\s+/g, ' ').trim() || 'Student';
 	    }
 
+	    function getFirstName(studentName, record) {
+	        if (record?.firstName) {
+	            return cleanStudentName(record.firstName);
+	        }
+	        const nameParts = cleanStudentName(studentName).split(' ');
+	        return nameParts.find((part) => part.length > 1) || nameParts[0] || 'Student';
+	    }
+
+	    function getStudentLookupKey(value) {
+	        return cleanStudentName(value).toLowerCase();
+	    }
+
+	    function getStudentEmailKey(value) {
+	        return (value || '').replace(/\s+/g, '').trim().toLowerCase();
+	    }
+
+	    function getCompactLookupKey(value) {
+	        return (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+	    }
+
+	    function getStudentRecord(studentName) {
+	        const records = window.BLUEBOOK_STUDENT_RECORDS || {};
+	        const byEmail = records.byEmail || {};
+	        const byName = records.byName || {};
+	        const storedEmail = getStudentEmailKey(localStorage.getItem(studentEmailKey));
+	        const compactEmail = getCompactLookupKey(storedEmail);
+	        const compactEmailRecord = Object.keys(byEmail).find((email) => {
+	            const compactRecordEmail = getCompactLookupKey(email);
+	            const compactRecordLocal = getCompactLookupKey(email.split('@')[0]);
+	            return compactEmail === compactRecordEmail ||
+	                (compactRecordLocal.length > 4 && compactEmail.startsWith(compactRecordLocal));
+	        });
+	        return byEmail[storedEmail] || byEmail[compactEmailRecord] || byName[getStudentLookupKey(studentName)] || null;
+	    }
+
+	    function renderAddressLines(container, lines) {
+	        container.textContent = '';
+	        lines.forEach((line, index) => {
+	            if (index > 0) {
+	                container.appendChild(document.createElement('br'));
+	            }
+	            container.appendChild(document.createTextNode(line));
+	        });
+	    }
+
+	    function applyStudentLocation(studentName) {
+	        const location = getStudentRecord(studentName) || (window.BLUEBOOK_STUDENT_RECORDS || {}).defaultLocation;
+	        if (!location) return;
+	        const centerName = location.centerName || '';
+	        const addressLines = Array.isArray(location.addressLines) ? location.addressLines : [];
+
+	        if (testCenterNameDisplay && centerName) {
+	            testCenterNameDisplay.textContent = centerName;
+	        }
+	        if (testCenterAddressDisplay && addressLines.length) {
+	            renderAddressLines(testCenterAddressDisplay, addressLines);
+	        }
+	        if (testCenterAddressInput) {
+	            testCenterAddressInput.value = [centerName].concat(addressLines).filter(Boolean).join('\n');
+	        }
+	    }
+
 	    function applyStudentName(value) {
-	        const studentName = cleanStudentName(value);
+	        const inputName = cleanStudentName(value);
+	        const record = getStudentRecord(inputName);
+	        const studentName = cleanStudentName(record?.fullName || inputName);
+	        const welcomeName = getFirstName(studentName, record);
 	        profileNameDisplay.textContent = studentName;
-	        welcomeNameDisplay.textContent = studentName;
+	        welcomeNameDisplay.textContent = welcomeName;
 	        fullNameInput.value = studentName;
 	        localStorage.setItem(studentNameKey, studentName);
 	        localStorage.setItem(legacyNameKey, studentName);
+	        applyStudentLocation(studentName);
 	    }
 
 	    applyStudentName(localStorage.getItem(studentNameKey) || localStorage.getItem(legacyNameKey) || fullNameInput.value);

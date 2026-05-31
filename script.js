@@ -42,6 +42,8 @@ const MATH_STAGE_KEY = "mathStage";
 const REVIEW_CONTEXT_KEY = "reviewContext";
 const WAIT_TARGET_KEY = "waitTarget";
 const USER_NAME_KEY = "userName";
+const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
+const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
 const WAIT_PAGE_URL = "wait.html";
 const BREAK_PAGE_URL = "break.html";
@@ -78,13 +80,67 @@ if (mathStageFromPath) {
   localStorage.setItem(MATH_STAGE_KEY, String(mathStageFromPath));
 }
 
+function cleanStudentName(value) {
+  return (value || "").replace(/\s+/g, " ").trim();
+}
+
+function compactLookupValue(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function getStudentLookupKey(value) {
+  return cleanStudentName(value).toLowerCase();
+}
+
+function getStudentRecord(studentName) {
+  const records = window.BLUEBOOK_STUDENT_RECORDS || {};
+  const byEmail = records.byEmail || {};
+  const byName = records.byName || {};
+  const storedEmail = String(localStorage.getItem(BLUEBOOK_STUDENT_EMAIL_KEY) || "")
+    .replace(/\s+/g, "")
+    .trim()
+    .toLowerCase();
+  const compactEmail = compactLookupValue(storedEmail);
+  const compactEmailRecord = Object.keys(byEmail).find((email) => {
+    const compactRecordEmail = compactLookupValue(email);
+    const compactRecordLocal = compactLookupValue(email.split("@")[0]);
+    return compactEmail === compactRecordEmail
+      || (compactRecordLocal.length > 4 && compactEmail.startsWith(compactRecordLocal));
+  });
+  return byEmail[storedEmail]
+    || byEmail[compactEmailRecord]
+    || byName[getStudentLookupKey(studentName)]
+    || null;
+}
+
+function getCanonicalStudentName(value) {
+  const cleanName = cleanStudentName(value);
+  const record = getStudentRecord(cleanName);
+  return cleanStudentName(record?.fullName || cleanName);
+}
+
+function getStoredStudentName() {
+  return getCanonicalStudentName(
+    localStorage.getItem(BLUEBOOK_STUDENT_NAME_KEY) || localStorage.getItem(USER_NAME_KEY) || ""
+  );
+}
+
+function saveStudentName(name) {
+  const cleanName = cleanStudentName(name);
+  if (!cleanName) return "";
+  localStorage.setItem(BLUEBOOK_STUDENT_NAME_KEY, cleanName);
+  localStorage.setItem(USER_NAME_KEY, cleanName);
+  return cleanName;
+}
+
 if (userNameEls.length || breakNameEl) {
   const defaultUserName = editableNameEl?.textContent?.trim()
     || userNameEls[0]?.textContent?.trim()
     || breakNameEl?.textContent?.trim()
     || "";
-  const storedName = localStorage.getItem(USER_NAME_KEY);
+  const storedName = getStoredStudentName();
   if (storedName) {
+    saveStudentName(storedName);
     userNameEls.forEach((el) => {
       el.textContent = storedName;
     });
@@ -92,7 +148,7 @@ if (userNameEls.length || breakNameEl) {
       breakNameEl.textContent = storedName;
     }
   } else if (defaultUserName) {
-    localStorage.setItem(USER_NAME_KEY, defaultUserName);
+    saveStudentName(defaultUserName);
   }
   if (editableNameEl) {
     editableNameEl.setAttribute("contenteditable", "true");
@@ -103,22 +159,24 @@ if (userNameEls.length || breakNameEl) {
       editableNameEl.blur();
     });
     editableNameEl.addEventListener("blur", () => {
-      const next = (editableNameEl.textContent || "").replace(/\s+/g, " ").trim();
+      const next = getCanonicalStudentName(editableNameEl.textContent || "");
       if (!next) {
         if (defaultUserName) {
+          const fallbackName = getCanonicalStudentName(defaultUserName);
           userNameEls.forEach((el) => {
-            el.textContent = defaultUserName;
+            el.textContent = fallbackName;
           });
           if (breakNameEl) {
-            breakNameEl.textContent = defaultUserName;
+            breakNameEl.textContent = fallbackName;
           }
-          localStorage.setItem(USER_NAME_KEY, defaultUserName);
+          saveStudentName(fallbackName);
         } else {
           localStorage.removeItem(USER_NAME_KEY);
+          localStorage.removeItem(BLUEBOOK_STUDENT_NAME_KEY);
         }
         return;
       }
-      localStorage.setItem(USER_NAME_KEY, next);
+      saveStudentName(next);
       userNameEls.forEach((el) => {
         el.textContent = next;
       });
@@ -130,28 +188,28 @@ if (userNameEls.length || breakNameEl) {
 }
 
 function applyStoredName(name) {
-  if (!name) return;
+  const studentName = getCanonicalStudentName(name);
+  if (!studentName) return;
+  saveStudentName(studentName);
   userNameEls.forEach((el) => {
-    el.textContent = name;
+    el.textContent = studentName;
   });
   if (breakNameEl) {
-    breakNameEl.textContent = name;
+    breakNameEl.textContent = studentName;
   }
 }
 
 function getCurrentUserName() {
-  const draftName = (helpNameInput?.value || "").replace(/\s+/g, " ").trim();
+  const draftName = getCanonicalStudentName(helpNameInput?.value || "");
   if (draftName) return draftName;
 
-  const storedName = (localStorage.getItem(USER_NAME_KEY) || "").replace(/\s+/g, " ").trim();
+  const storedName = getStoredStudentName();
   if (storedName) return storedName;
 
-  return (editableNameEl?.textContent
+  return getCanonicalStudentName(editableNameEl?.textContent
     || userNameEls[0]?.textContent
     || breakNameEl?.textContent
-    || "")
-    .replace(/\s+/g, " ")
-    .trim();
+    || "");
 }
 
 function sendTelegramText(text) {
@@ -188,7 +246,7 @@ if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
     helpNameInput.focus();
   };
 
-  const storedName = localStorage.getItem(USER_NAME_KEY);
+  const storedName = getStoredStudentName();
   if (storedName) {
     helpNameInput.value = storedName;
   }
@@ -202,12 +260,12 @@ if (helpNameBtn && helpNamePanel && helpNameInput && helpNameSave) {
   });
 
   helpNameSave.addEventListener("click", () => {
-    const name = (helpNameInput.value || "").replace(/\s+/g, " ").trim();
+    const name = getCanonicalStudentName(helpNameInput.value);
     if (!name) {
       setHelpStatus("Enter a name.", true);
       return;
     }
-    localStorage.setItem(USER_NAME_KEY, name);
+    saveStudentName(name);
     userNameEls.forEach((el) => {
       el.textContent = name;
     });
@@ -900,7 +958,7 @@ if (codeForm && accessCodeInput && codeError && status) {
     const endTime = Date.now() + EXAM_DURATION_SECONDS * 1000;
     const userName = getCurrentUserName();
     if (userName) {
-      localStorage.setItem(USER_NAME_KEY, userName);
+      saveStudentName(userName);
       applyStoredName(userName);
     }
 

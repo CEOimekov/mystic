@@ -20,6 +20,12 @@
   const waitPageUrl = "wait.html";
   const state = questions.map(() => ({ review: false, answer: null }));
 
+  function getStoredStudentName() {
+    return (localStorage.getItem("bluebookStudentName") || localStorage.getItem("userName") || "Student")
+      .replace(/\s+/g, " ")
+      .trim() || "Student";
+  }
+
   function normalizeQuestionHTML(value) {
     return String(value || "")
       .replaceAll("/static/images/scatter-plot.png", `${IMAGE_PATH}scatter-plot.0335ee083fd0.png`)
@@ -135,7 +141,7 @@
         element.textContent = `${moduleTitle} Questions`;
       });
       document.querySelectorAll("[data-student-name]").forEach((element) => {
-        element.textContent = localStorage.getItem("userName") || "Student";
+        element.textContent = getStoredStudentName();
       });
     },
 

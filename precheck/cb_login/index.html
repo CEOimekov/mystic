@@ -193,12 +193,47 @@
 
 <div class="version-info">VSN-0.9.605 BT-2026-03-12 20:36</div>
 
+<script src="../static/student-records.js"></script>
 <script>
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const submitBtn = document.getElementById('submit-btn');
     const togglePasswordBtn = document.getElementById('toggle-password');
     const toggleLine = document.getElementById('toggle-line');
+
+    function cleanStudentName(value) {
+        return (value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function compactLookupValue(value) {
+        return String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function getStudentRecordByEmail(email) {
+        const records = window.BLUEBOOK_STUDENT_RECORDS || {};
+        const byEmail = records.byEmail || {};
+        const storedEmail = String(email || '').replace(/\s+/g, '').trim().toLowerCase();
+        const compactEmail = compactLookupValue(storedEmail);
+        const compactEmailRecord = Object.keys(byEmail).find(function (recordEmail) {
+            const compactRecordEmail = compactLookupValue(recordEmail);
+            const compactRecordLocal = compactLookupValue(recordEmail.split('@')[0]);
+            return compactEmail === compactRecordEmail ||
+                (compactRecordLocal.length > 4 && compactEmail.startsWith(compactRecordLocal));
+        });
+        return byEmail[storedEmail] || byEmail[compactEmailRecord] || null;
+    }
+
+    function getStudentNameFromEmail(email) {
+        const record = getStudentRecordByEmail(email);
+        if (record && record.fullName) {
+            return cleanStudentName(record.fullName);
+        }
+        return email.split('@')[0]
+            .replace(/[._-]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/\b\w/g, function (letter) { return letter.toUpperCase(); }) || 'Student';
+    }
 
     function validateForm() {
         if (emailInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
@@ -231,11 +266,7 @@
 	        event.preventDefault();
 	        var email = emailInput.value.trim();
 	        if (email === '' || passwordInput.value.trim() === '') return;
-	        var studentName = email.split('@')[0]
-	            .replace(/[._-]+/g, ' ')
-	            .replace(/\s+/g, ' ')
-	            .trim()
-	            .replace(/\b\w/g, function (letter) { return letter.toUpperCase(); }) || 'Student';
+	        var studentName = getStudentNameFromEmail(email);
 	        localStorage.setItem('bluebookStudentEmail', email);
 	        localStorage.setItem('bluebookStudentName', studentName);
 	        localStorage.setItem('userName', studentName);

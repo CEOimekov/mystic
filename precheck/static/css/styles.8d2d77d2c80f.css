@@ -514,7 +514,7 @@ body {
 .header-link {
     margin-left: auto;
     color: #324dc7;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     text-decoration: underline;
 }
@@ -555,6 +555,10 @@ body {
     margin: 0;
 }
 
+.reg-left p strong {
+    font-weight: 600;
+}
+
 .reg-location {
     margin-top: 16px;
 }
@@ -582,7 +586,7 @@ body {
     gap: 4px;
     color: #324dc7;
     text-decoration: underline;
-    font-weight: 500;
+    font-weight: 450;
     font-size: 16px;
     cursor: pointer;
     white-space: nowrap;

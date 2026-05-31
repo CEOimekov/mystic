@@ -63,7 +63,7 @@ body.modal-open {
 }
 
 body.start-page {
-  background: rgb(220, 228, 192);
+  background: rgb(230, 235, 214);
   font-family: var(--font-ui);
   color: #2b2f33;
   display: flex;
@@ -213,7 +213,7 @@ body.start-page {
   min-height: 300px;
   background: #ffffff;
   color: #1f2633;
-  border-radius: 8px;
+  border-radius: 3px;
   padding: 34px 48px;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -406,8 +406,9 @@ h3 {
 }
 
 .start-link--home {
-  color: #51565c;
+  color: #3f444a;
   font-size: 12px;
+  font-weight: 500;
 }
 
 .start-icon {
@@ -527,20 +528,120 @@ h3 {
 }
 
 .start-footer {
-  margin-top: 34px;
-  font-size: 12px;
-  color: #4b4f55;
-  transform: translateY(40px);
+  position: fixed;
+  left: 50%;
+  bottom: 48px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  padding: 15px 24px 15px 18px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 18px rgba(33, 37, 41, 0.05);
+  font-size: 14px;
+  line-height: 1.38;
+  color: #30343a;
+  text-align: left;
 }
 
 .start-footer__link {
   border: none;
   background: transparent;
-  color: inherit;
+  color: #425ab6;
   font: inherit;
+  font-weight: 500;
   text-decoration: underline;
   padding: 0;
   cursor: pointer;
+}
+
+.start-footer__icon {
+  width: 64px;
+  height: 66px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  filter: saturate(0.92);
+}
+
+.start-footer__icon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 61%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.76) 0 34%, rgba(246, 232, 249, 0.48) 58%, rgba(239, 218, 246, 0) 78%);
+  filter: blur(0.35px);
+}
+
+.start-footer__icon svg {
+  width: 42px;
+  height: 49px;
+  position: relative;
+  z-index: 1;
+}
+
+.clipboard-paper {
+  fill: #e8e4e8;
+  stroke: #4f545c;
+  stroke-width: 2.25;
+  stroke-linejoin: miter;
+}
+
+.clipboard-inner {
+  fill: #f2e6e5;
+  stroke: #64686f;
+  stroke-width: 1.25;
+  stroke-linejoin: miter;
+}
+
+.clipboard-edge {
+  fill: rgba(247, 246, 248, 0.68);
+}
+
+.clipboard-top {
+  fill: #9ec1ec;
+  stroke: #51565d;
+  stroke-width: 1.55;
+}
+
+.clipboard-clip {
+  fill: #8ebcf0;
+  stroke: #4f545c;
+  stroke-width: 1.65;
+}
+
+.clipboard-clip-shade {
+  fill: #2866b4;
+}
+
+.clipboard-shadow {
+  fill: rgba(91, 128, 190, 0.32);
+  filter: blur(0.5px);
+}
+
+.clipboard-line {
+  fill: none;
+  stroke: #8c94a4;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+}
+
+.clipboard-dots {
+  fill: none;
+  stroke: #8c94a4;
+  stroke-width: 2.1;
+  stroke-linecap: round;
 }
 
 .start-bold {
@@ -1579,15 +1680,29 @@ button.math-tool:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f2f2f2;
+  position: relative;
+  background: transparent;
   margin-bottom: 6px;
   font-family: var(--font-ui);
+}
+
+.question-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 45px;
+  top: 5px;
+  height: 30px;
+  background: #f2f2f2;
+  pointer-events: none;
 }
 
 .question-meta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .question-number {
@@ -1647,35 +1762,25 @@ button.math-tool:focus-visible {
 }
 
 .abc-btn {
-  border: 1px solid #1b2a68;
-  background: #0c3b8f;
-  color: #fff;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  width: 30px;
-  height: 25px;
+  border: none;
+  background: transparent;
+  width: 28px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  letter-spacing: -1px;
   padding: 0;
   position: relative;
-  top: 7px;
-  left: -45px;
+  z-index: 1;
+  top: 6px;
+  left: -49px;
+  cursor: pointer;
 }
 
-.abc-btn::after {
-  content: "";
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  top: 50%;
-  height: 1px;
-  background: #ffffff;
-  transform: rotate(-35deg);
-  opacity: 0.9;
-  pointer-events: none;
+.abc-btn__icon {
+  display: block;
+  width: 28px;
+  height: 26px;
 }
 
 .question-body {

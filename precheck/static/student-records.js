@@ -47,6 +47,35 @@ window.BLUEBOOK_STUDENT_RECORDS = {
         "MEDEU DISTRICT",
         "ALMATY, KZ"
       ]
+    },
+    "ersajynzarasbaev73@gmail.com": {
+      fullName: "Yers Zharasbayev",
+      firstName: "Yers",
+      centerName: "ASTANA GARDEN SCHOOL",
+      addressLines: [
+        "34, ALIKHAN BOKEIKHAN STREET",
+        "ASTANA, KZ"
+      ]
+    },
+    "aruzhan.shaykhinova@gmail.com": {
+      fullName: "Aruzhan Shaykhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "diana.zhanseit@gmail.com": {
+      fullName: "Diana Zhanseitova",
+      firstName: "Diana",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
     }
   },
   byName: {
@@ -213,6 +242,103 @@ window.BLUEBOOK_STUDENT_RECORDS = {
         "MOUNTAIN GIANT MICRO DISTRICT,",
         "MEDEU DISTRICT",
         "ALMATY, KZ"
+      ]
+    },
+    "yers zharasbayev": {
+      fullName: "Yers Zharasbayev",
+      firstName: "Yers",
+      centerName: "ASTANA GARDEN SCHOOL",
+      addressLines: [
+        "34, ALIKHAN BOKEIKHAN STREET",
+        "ASTANA, KZ"
+      ]
+    },
+    "zharasbayev yers": {
+      fullName: "Yers Zharasbayev",
+      firstName: "Yers",
+      centerName: "ASTANA GARDEN SCHOOL",
+      addressLines: [
+        "34, ALIKHAN BOKEIKHAN STREET",
+        "ASTANA, KZ"
+      ]
+    },
+    "ersajynzarasbaev73": {
+      fullName: "Yers Zharasbayev",
+      firstName: "Yers",
+      centerName: "ASTANA GARDEN SCHOOL",
+      addressLines: [
+        "34, ALIKHAN BOKEIKHAN STREET",
+        "ASTANA, KZ"
+      ]
+    },
+    "aruzhan shaykhinova": {
+      fullName: "Aruzhan Shaykhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "shaykhinova aruzhan": {
+      fullName: "Aruzhan Shaykhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "aruzhan": {
+      fullName: "Aruzhan Shaykhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "diana zhanseitova": {
+      fullName: "Diana Zhanseitova",
+      firstName: "Diana",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "zhanseitova diana": {
+      fullName: "Diana Zhanseitova",
+      firstName: "Diana",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "diana zhanseit": {
+      fullName: "Diana Zhanseitova",
+      firstName: "Diana",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "diana": {
+      fullName: "Diana Zhanseitova",
+      firstName: "Diana",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
       ]
     }
   }

@@ -45,8 +45,9 @@ const USER_NAME_KEY = "userName";
 const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
 const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
-const WAIT_PAGE_URL = "wait.html";
-const BREAK_PAGE_URL = "break.html";
+const URL_CACHE_BUST = "v=20260601-cache2";
+const WAIT_PAGE_URL = withCacheBust("wait.html");
+const BREAK_PAGE_URL = withCacheBust("break.html");
 const WAIT_DURATION_MS = 3500;
 const BREAK_DURATION_SECONDS = 10 * 60;
 const COMPACT_OPTION_THRESHOLD = 95;
@@ -80,6 +81,12 @@ if (mathStageFromPath) {
   localStorage.setItem(MATH_STAGE_KEY, String(mathStageFromPath));
 }
 
+function withCacheBust(url) {
+  if (!url || url.includes(URL_CACHE_BUST)) return url;
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}${URL_CACHE_BUST}`;
+}
+
 function cleanStudentName(value) {
   return (value || "").replace(/\s+/g, " ").trim();
 }
@@ -89,7 +96,7 @@ function compactLookupValue(value) {
 }
 
 function getStudentLookupKey(value) {
-  return cleanStudentName(value).toLowerCase();
+  return cleanStudentName(value).replace(/[._-]+/g, " ").toLowerCase();
 }
 
 function getStudentRecord(studentName) {
@@ -348,9 +355,9 @@ function setWaitTarget(target) {
 
 function getReviewUrl() {
   if (isMathPage) {
-    return getMathStage() === 2 ? "review4.html" : "review3.html";
+    return withCacheBust(getMathStage() === 2 ? "review4.html" : "review3.html");
   }
-  return getCurrentModule() === 2 ? "review2.html" : "review.html";
+  return withCacheBust(getCurrentModule() === 2 ? "review2.html" : "review.html");
 }
 
 if (isReviewPage && reviewContextFromPage) {
@@ -840,10 +847,10 @@ function setStoredReviewMark(questionNumber, marked) {
 
 function getQuestionUrlForContext(context, questionNumber) {
   const safeQuestion = Math.max(1, Number(questionNumber) || 1);
-  if (context === "math1") return `math.html?question=${safeQuestion}`;
-  if (context === "math2") return `math2.html?question=${safeQuestion}`;
-  if (context === "reading2") return `exam2.html?question=${safeQuestion}`;
-  return `exam.html?question=${safeQuestion}`;
+  if (context === "math1") return withCacheBust(`math.html?question=${safeQuestion}`);
+  if (context === "math2") return withCacheBust(`math2.html?question=${safeQuestion}`);
+  if (context === "reading2") return withCacheBust(`exam2.html?question=${safeQuestion}`);
+  return withCacheBust(`exam.html?question=${safeQuestion}`);
 }
 
 function resetExamProgress() {
@@ -982,7 +989,7 @@ if (codeForm && accessCodeInput && codeError && status) {
       await sendTelegramText(telegramMessage);
     }
     setTimeout(() => {
-      window.location.href = "exam.html";
+      window.location.href = withCacheBust("exam.html");
     }, 200);
   });
 }
@@ -1738,11 +1745,11 @@ if (reviewBackBtn) {
       || localStorage.getItem(REVIEW_CONTEXT_KEY)
       || (storedMathStage ? `math${storedMathStage}` : null);
     if (context === "math1") {
-      window.location.href = `math.html?question=${getQuestionTotalForContext("math1")}`;
+      window.location.href = withCacheBust(`math.html?question=${getQuestionTotalForContext("math1")}`);
       return;
     }
     if (context === "math2") {
-      window.location.href = `math2.html?question=${getQuestionTotalForContext("math2")}`;
+      window.location.href = withCacheBust(`math2.html?question=${getQuestionTotalForContext("math2")}`);
       return;
     }
     window.location.href = getQuestionUrlForContext(context, getQuestionTotalForContext(context));
@@ -1814,13 +1821,13 @@ if (isWaitPage) {
       localStorage.setItem(MATH_END_STORAGE_KEY, String(endTime));
       localStorage.setItem(MATH_STAGE_KEY, "2");
       localStorage.removeItem(getAnswersStorageKey("math1"));
-      window.location.href = "math2.html";
+      window.location.href = withCacheBust("math2.html");
       return;
     }
     if (waitTarget === "end") {
       setWaitTarget(null);
       localStorage.removeItem(getAnswersStorageKey("math2"));
-      window.location.href = "end.html";
+      window.location.href = withCacheBust("end.html");
       return;
     }
     if (waitTarget === "break") {
@@ -1835,7 +1842,7 @@ if (isWaitPage) {
       localStorage.setItem(REMAINING_STORAGE_KEY, String(EXAM_DURATION_SECONDS));
       localStorage.removeItem(getAnswersStorageKey("reading1"));
       localStorage.setItem(MODULE_STORAGE_KEY, "2");
-      window.location.href = "exam2.html";
+      window.location.href = withCacheBust("exam2.html");
       return;
     }
     window.location.href = BREAK_PAGE_URL;

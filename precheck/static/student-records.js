@@ -144,6 +144,15 @@ window.BLUEBOOK_STUDENT_RECORDS = {
         "ASTANA/NUR-SULTAN, KZ"
       ]
     },
+    "s.zhaneka28": {
+      fullName: "Zhanerke Serik",
+      firstName: "Zhanerke",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
+      ]
+    },
     "s zhanerke": {
       fullName: "Zhanerke Serik",
       firstName: "Zhanerke",

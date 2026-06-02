@@ -17,7 +17,7 @@
   const reviewStorageKey = `reviewMarks_${context}`;
   const timerStorageKey = `mathNativeEnd_${context}`;
   const waitTargetKey = "waitTarget";
-  const waitPageUrl = "wait.html";
+  const waitPageUrl = "wait.html?v=20260601-cache2";
   const state = questions.map(() => ({ review: false, answer: null }));
 
   function getStoredStudentName() {

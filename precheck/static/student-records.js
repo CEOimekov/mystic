@@ -58,7 +58,7 @@ window.BLUEBOOK_STUDENT_RECORDS = {
       ]
     },
     "aruzhan.shaykhinova@gmail.com": {
-      fullName: "Aruzhan Shaykhinova",
+      fullName: "Aruzhan Shaikhinova",
       firstName: "Aruzhan",
       centerName: "QSI INTL SCH ASTANA",
       addressLines: [
@@ -272,7 +272,7 @@ window.BLUEBOOK_STUDENT_RECORDS = {
       ]
     },
     "aruzhan shaykhinova": {
-      fullName: "Aruzhan Shaykhinova",
+      fullName: "Aruzhan Shaikhinova",
       firstName: "Aruzhan",
       centerName: "QSI INTL SCH ASTANA",
       addressLines: [
@@ -282,7 +282,27 @@ window.BLUEBOOK_STUDENT_RECORDS = {
       ]
     },
     "shaykhinova aruzhan": {
-      fullName: "Aruzhan Shaykhinova",
+      fullName: "Aruzhan Shaikhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "aruzhan shaikhinova": {
+      fullName: "Aruzhan Shaikhinova",
+      firstName: "Aruzhan",
+      centerName: "QSI INTL SCH ASTANA",
+      addressLines: [
+        "17 BAYAN SULU STREET",
+        "KOMSOMOLSKIY VILLAGE",
+        "ASTANA, KZ"
+      ]
+    },
+    "shaikhinova aruzhan": {
+      fullName: "Aruzhan Shaikhinova",
       firstName: "Aruzhan",
       centerName: "QSI INTL SCH ASTANA",
       addressLines: [
@@ -292,7 +312,7 @@ window.BLUEBOOK_STUDENT_RECORDS = {
       ]
     },
     "aruzhan": {
-      fullName: "Aruzhan Shaykhinova",
+      fullName: "Aruzhan Shaikhinova",
       firstName: "Aruzhan",
       centerName: "QSI INTL SCH ASTANA",
       addressLines: [

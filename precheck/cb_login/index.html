@@ -153,6 +153,10 @@
                     Address</label>
                 <input type="text" id="email" autocomplete="off" required
                     style="width: 100%; padding: 12px 14px; border: 1px solid #777; border-radius: 6px; font-size: 14px; box-sizing: border-box; cursor: pointer;">
+                <div id="login-error" role="alert"
+                    style="display: none; color: #b00020; font-size: 13px; font-weight: 600; margin-top: 8px;">
+                    We can't find this email address.
+                </div>
             </div>
 
             <div style="margin-bottom: 12px; position: relative;">
@@ -200,6 +204,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const togglePasswordBtn = document.getElementById('toggle-password');
     const toggleLine = document.getElementById('toggle-line');
+    const loginError = document.getElementById('login-error');
 
     function cleanStudentName(value) {
         return (value || '').replace(/\s+/g, ' ').trim();
@@ -228,11 +233,13 @@
         if (record && record.fullName) {
             return cleanStudentName(record.fullName);
         }
-        return email.split('@')[0]
-            .replace(/[._-]+/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .replace(/\b\w/g, function (letter) { return letter.toUpperCase(); }) || 'Student';
+        return '';
+    }
+
+    function setLoginError(isVisible) {
+        if (!loginError) return;
+        loginError.style.display = isVisible ? 'block' : 'none';
+        emailInput.style.borderColor = isVisible ? '#b00020' : '#777';
     }
 
     function validateForm() {
@@ -249,7 +256,13 @@
     }
 
     emailInput.addEventListener('input', validateForm);
+    emailInput.addEventListener('input', function () {
+        setLoginError(false);
+    });
     passwordInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', function () {
+        setLoginError(false);
+    });
     validateForm();
 
     togglePasswordBtn.addEventListener('click', function () {
@@ -267,6 +280,11 @@
 	        var email = emailInput.value.trim();
 	        if (email === '' || passwordInput.value.trim() === '') return;
 	        var studentName = getStudentNameFromEmail(email);
+	        if (!studentName) {
+	            setLoginError(true);
+	            emailInput.focus();
+	            return;
+	        }
 	        localStorage.setItem('bluebookStudentEmail', email);
 	        localStorage.setItem('bluebookStudentName', studentName);
 	        localStorage.setItem('userName', studentName);

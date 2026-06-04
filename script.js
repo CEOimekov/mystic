@@ -38,6 +38,7 @@ const REMAINING_STORAGE_KEY = "examRemainingSeconds";
 const MODULE_STORAGE_KEY = "examModule";
 const BREAK_END_STORAGE_KEY = "breakEndTime";
 const MATH_END_STORAGE_KEY = "mathEndTime";
+const MATH_NATIVE_END_STORAGE_KEYS = ["mathNativeEnd_math1", "mathNativeEnd_math2"];
 const MATH_STAGE_KEY = "mathStage";
 const REVIEW_CONTEXT_KEY = "reviewContext";
 const WAIT_TARGET_KEY = "waitTarget";
@@ -864,6 +865,9 @@ function resetExamProgress() {
   localStorage.removeItem("examEndTime");
   localStorage.removeItem(BREAK_END_STORAGE_KEY);
   localStorage.removeItem(MATH_END_STORAGE_KEY);
+  MATH_NATIVE_END_STORAGE_KEYS.forEach((key) => {
+    localStorage.removeItem(key);
+  });
   localStorage.removeItem(MATH_STAGE_KEY);
   localStorage.removeItem(REVIEW_CONTEXT_KEY);
   localStorage.removeItem(WAIT_TARGET_KEY);
@@ -1107,6 +1111,12 @@ function startBreakTimer(el) {
     if (remainingMs <= 0) {
       el.textContent = "00:00";
       clearInterval(intervalId);
+      localStorage.removeItem(BREAK_END_STORAGE_KEY);
+      MATH_NATIVE_END_STORAGE_KEYS.forEach((key) => {
+        localStorage.removeItem(key);
+      });
+      localStorage.setItem(MATH_STAGE_KEY, "1");
+      window.location.href = withCacheBust("math.html");
       return;
     }
     const remainingSeconds = Math.floor(remainingMs / 1000);

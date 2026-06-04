@@ -46,7 +46,7 @@ const USER_NAME_KEY = "userName";
 const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
 const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
-const URL_CACHE_BUST = "v=20260604-verbal1";
+const URL_CACHE_BUST = "v=20260604-verbal2";
 const WAIT_PAGE_URL = withCacheBust("wait.html");
 const BREAK_PAGE_URL = withCacheBust("break.html");
 const WAIT_DURATION_MS = 3500;
@@ -1416,18 +1416,35 @@ if (questionPickerBtn && questionPickerMenu) {
   }
 
 if (nextBtn) {
-  nextBtn.addEventListener("click", () => {
-    if (currentQuestion >= QUESTION_TOTAL) {
-      const context = getAnswersContext();
-      setReviewContext(context);
-      if (!isMathPage) {
-        storeRemainingSecondsFromEndTime();
+  let isAdvancingQuestion = false;
+  const goToNextQuestion = (event) => {
+    event?.preventDefault();
+    if (isAdvancingQuestion) return;
+    isAdvancingQuestion = true;
+    let shouldResetAdvanceLock = true;
+    try {
+      if (currentQuestion >= QUESTION_TOTAL) {
+        shouldResetAdvanceLock = false;
+        const context = getAnswersContext();
+        setReviewContext(context);
+        if (!isMathPage) {
+          storeRemainingSecondsFromEndTime();
+        }
+        window.location.href = getReviewUrl();
+        return;
       }
-      window.location.href = getReviewUrl();
-      return;
+      setCurrentQuestion(currentQuestion + 1);
+    } finally {
+      if (shouldResetAdvanceLock) {
+        window.setTimeout(() => {
+          isAdvancingQuestion = false;
+        }, 0);
+      }
     }
-    setCurrentQuestion(currentQuestion + 1);
-  });
+  };
+
+  window.bluebookVerbalNextQuestion = goToNextQuestion;
+  nextBtn.addEventListener("click", goToNextQuestion);
 }
 
   function setCurrentQuestion(value) {

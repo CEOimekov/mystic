@@ -2339,6 +2339,8 @@ button.math-tool:focus-visible {
   gap: 10px;
   justify-content: flex-end;
   padding-right: 12px;
+  position: relative;
+  z-index: 20;
 }
 
 .btn {

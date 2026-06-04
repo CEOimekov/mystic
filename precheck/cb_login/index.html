@@ -9,7 +9,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bluebook</title>
-  <link rel="stylesheet" href="../static/css/styles.8d2d77d2c80f.css?v=20260604-verbal2">
+  <link rel="stylesheet" href="../static/css/styles.8d2d77d2c80f.css?v=20260604-verbal3">
   <link rel="shortcut icon" type="image/png" href="../static/images/favicon.5a3852560f2e.png">
   <style>
     .body-login .content-area {
@@ -89,7 +89,7 @@
       <div class="title-bar-right">
         <span class="window-control minimize">—</span>
         <span class="window-control maximize">&#9744;</span>
-        <a href="../index.html?v=20260604-verbal2" style="color: white; text-decoration: none;"><span
+        <a href="../index.html?v=20260604-verbal3" style="color: white; text-decoration: none;"><span
             class="window-control close">&#10005;</span></a>
       </div>
     </header>
@@ -130,7 +130,7 @@
         style="text-align: left; width: 450px; display: flex; flex-direction: column; align-items: center;">
         <button class="btn-back"
             style="cursor: pointer; background: none; border: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 4px 12px; margin-bottom: 24px; align-self: flex-start; margin-left: -12px;"
-            onclick="window.location.href='../index.html?v=20260604-verbal2'">
+            onclick="window.location.href='../index.html?v=20260604-verbal3'">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round"
                 style="border: 1px solid #d9d9d9; border-radius: 4px; padding: 4px;">
@@ -197,7 +197,7 @@
 
 <div class="version-info">VSN-0.9.605 BT-2026-03-12 20:36</div>
 
-<script src="../static/student-records.js?v=20260604-verbal2"></script>
+<script src="../static/student-records.js?v=20260604-verbal3"></script>
 <script>
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -288,7 +288,7 @@
 	        localStorage.setItem('bluebookStudentEmail', email);
 	        localStorage.setItem('bluebookStudentName', studentName);
 	        localStorage.setItem('userName', studentName);
-	        window.location.href = '../dashboard/index.html?v=20260604-verbal2';
+	        window.location.href = '../dashboard/index.html?v=20260604-verbal3';
 	    });
 	</script>
 
@@ -336,7 +336,7 @@
       setTimeout(function () {
         var staticUrlsToCache = ['/static/images/home.ac73a99c694f.png', '../static/images/current.3fa1ffca9bea.png', '../static/images/dashed-border.0888d05e29f5.png', '../static/images/help.c125b8a1a350.svg', '../static/images/cross-out-abc.ad3fac4a1cc0.svg', '../static/images/confetti.4028f8cd3cfe.png', '../static/images/arrow.27c8720cd843.png', '../static/images/question-border.827b1f23acb2.png', '../static/images/bluebook-white-logo.c693d1de60da.svg', '../static/images/lock-device.8ff2ee247735.png', '../static/images/loading-exam.a36b6e973622.png', '../static/images/scatter-plot.0335ee083fd0.png', '../static/images/bigfuture.91dff4d81eb9.jpg', '../static/images/congrats.5180d4b2de9a.jpg', '../static/images/minimize.fe5b4b6b4b05.svg', '../static/images/mark-hover.eaec77036b5b.svg', '../static/images/bluebook-black.008297e6de79.svg', '../static/images/cross-out-abc-blue.fc60b602ee82.svg', '../static/images/calculator.fbdbbfd499eb.svg', '../static/images/for-review.e1e16be1fb5e.png', '../static/images/loaded.b49df700c180.png', '../static/images/logo-white.7a18a242e5d1.svg', '../static/images/scientific.bfc02af29790.png', '../static/images/battery.c18eef949593.svg', '../static/images/bluebook-blue.7aa6cee32568.svg', '../static/images/reference.317dd8e75a28.svg', '../static/images/favicon.5a3852560f2e.png', '../static/images/move-hover.9b6f61bb01d5.png', '../static/images/full-length-practice.cd5ebf8c1c4f.svg', '../static/images/profile.d04779ce0df8.png', '../static/images/items-under.4b49f4ee1908.png', '../static/images/items-on.27e568909915.png', '../static/images/login-background.5f29bc9cc777.svg', '../static/images/testing-tools-video.072a18a17d4e.png', '../static/images/congrats-laptop.0c65a80e6516.svg', '../static/images/test-preview.c2382162ccb6.svg', '../static/images/marked.e75e631e0330.svg', '../static/images/timer.c20291d6cec9.svg', '../static/images/highlights.8536b8c75d51.svg', '../static/images/logo-blue.00fb7dc18417.svg', '../static/images/graphing.e4cc7daaff89.png', '../static/images/separator.78101a7eddc1.svg', '../static/images/ticket.38150112440b.svg', '../static/images/move.aa901302f0fd.png', '../static/images/mark.452451cb068c.svg', '/static/css/styles.8d2d77d2c80f.css'];
         staticUrlsToCache.forEach(function (url) {
-          fetch(url, { cache: 'force-cache' }).catch(function (e) { });
+          fetch(url, { cache: 'no-store' }).catch(function (e) { });
         });
       }, 500);
     });

@@ -47,7 +47,7 @@ const USER_NAME_KEY = "userName";
 const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
 const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
-const URL_CACHE_BUST = "v=20260604-verbal5";
+const URL_CACHE_BUST = "v=20260604-verbal6";
 const WAIT_PAGE_URL = withCacheBust("wait.html");
 const BREAK_PAGE_URL = withCacheBust("break.html");
 const WAIT_DURATION_MS = 3500;
@@ -1426,7 +1426,8 @@ if (questionPickerBtn && questionPickerMenu) {
 
   if (backBtn) {
     backBtn.addEventListener("click", () => {
-      setCurrentQuestion(currentQuestion - 1);
+      const activeQuestion = getCurrentQuestionNumber() || currentQuestion;
+      setCurrentQuestion(activeQuestion - 1);
     });
   }
 
@@ -1434,10 +1435,13 @@ if (nextBtn) {
   let isAdvancingQuestion = false;
   const goToNextQuestion = (event) => {
     event?.preventDefault();
+    event?.stopPropagation();
     if (isAdvancingQuestion) return;
     isAdvancingQuestion = true;
     let shouldResetAdvanceLock = true;
     try {
+      const activeQuestion = getCurrentQuestionNumber() || currentQuestion;
+      currentQuestion = Math.min(QUESTION_TOTAL, Math.max(1, activeQuestion));
       if (currentQuestion >= QUESTION_TOTAL) {
         shouldResetAdvanceLock = false;
         const context = getAnswersContext();

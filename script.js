@@ -24,6 +24,7 @@ const directionsOverlay = document.getElementById("directionsOverlay");
 const directionsModal = directionsOverlay?.querySelector(".directions-modal");
 const directionsClose = directionsOverlay?.querySelector(".directions-close");
 const desmosCalculatorBtn = document.querySelector(".math-tool--calculator");
+const breakTestingLinks = document.querySelectorAll(".break-link[href^='math.html']");
 const reviewGrid = document.getElementById("reviewGrid");
 const reviewBackBtn = document.getElementById("reviewBackBtn");
 const reviewNextBtn = document.getElementById("reviewNextBtn");
@@ -46,7 +47,7 @@ const USER_NAME_KEY = "userName";
 const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
 const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
-const URL_CACHE_BUST = "v=20260604-verbal3";
+const URL_CACHE_BUST = "v=20260604-verbal4";
 const WAIT_PAGE_URL = withCacheBust("wait.html");
 const BREAK_PAGE_URL = withCacheBust("break.html");
 const WAIT_DURATION_MS = 3500;
@@ -352,6 +353,15 @@ function setWaitTarget(target) {
   } else {
     localStorage.removeItem(WAIT_TARGET_KEY);
   }
+}
+
+function prepareMathModuleOneFromBreak() {
+  setWaitTarget(null);
+  localStorage.removeItem(MATH_END_STORAGE_KEY);
+  MATH_NATIVE_END_STORAGE_KEYS.forEach((key) => {
+    localStorage.removeItem(key);
+  });
+  localStorage.setItem(MATH_STAGE_KEY, "1");
 }
 
 function getReviewUrl() {
@@ -1016,6 +1026,14 @@ if (breakTimerEl) {
   startBreakTimer(breakTimerEl);
 }
 
+if (breakTestingLinks.length) {
+  breakTestingLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      prepareMathModuleOneFromBreak();
+    });
+  });
+}
+
 function getStoredRemainingSeconds() {
   const raw = localStorage.getItem(REMAINING_STORAGE_KEY);
   if (!raw) return null;
@@ -1112,10 +1130,7 @@ function startBreakTimer(el) {
       el.textContent = "00:00";
       clearInterval(intervalId);
       localStorage.removeItem(BREAK_END_STORAGE_KEY);
-      MATH_NATIVE_END_STORAGE_KEYS.forEach((key) => {
-        localStorage.removeItem(key);
-      });
-      localStorage.setItem(MATH_STAGE_KEY, "1");
+      prepareMathModuleOneFromBreak();
       window.location.href = withCacheBust("math.html");
       return;
     }

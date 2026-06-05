@@ -76,6 +76,15 @@ window.BLUEBOOK_STUDENT_RECORDS = {
         "KOMSOMOLSKIY VILLAGE",
         "ASTANA, KZ"
       ]
+    },
+    "bbishimov@gmail.com": {
+      fullName: "Beksultan Bishimov",
+      firstName: "Beksultan",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
+      ]
     }
   },
   byName: {
@@ -359,6 +368,42 @@ window.BLUEBOOK_STUDENT_RECORDS = {
         "17 BAYAN SULU STREET",
         "KOMSOMOLSKIY VILLAGE",
         "ASTANA, KZ"
+      ]
+    },
+    "beksultan bishimov": {
+      fullName: "Beksultan Bishimov",
+      firstName: "Beksultan",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
+      ]
+    },
+    "bishimov beksultan": {
+      fullName: "Beksultan Bishimov",
+      firstName: "Beksultan",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
+      ]
+    },
+    "bbishimov": {
+      fullName: "Beksultan Bishimov",
+      firstName: "Beksultan",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
+      ]
+    },
+    "beksultan": {
+      fullName: "Beksultan Bishimov",
+      firstName: "Beksultan",
+      centerName: "SPECTRUM INTL SCH",
+      addressLines: [
+        "11 KOSHKARBAYEV STREET",
+        "ASTANA/NUR-SULTAN, KZ"
       ]
     }
   }

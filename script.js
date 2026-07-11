@@ -47,7 +47,7 @@ const USER_NAME_KEY = "userName";
 const BLUEBOOK_STUDENT_NAME_KEY = "bluebookStudentName";
 const BLUEBOOK_STUDENT_EMAIL_KEY = "bluebookStudentEmail";
 const TELEGRAM_ENDPOINT = "https://mystic-wine.vercel.app/api/submit";
-const URL_CACHE_BUST = "v=20260606-lock1";
+const URL_CACHE_BUST = "v=20260711-ronaldo1";
 const WAIT_PAGE_URL = withCacheBust("wait.html");
 const BREAK_PAGE_URL = withCacheBust("break.html");
 const WAIT_DURATION_MS = 3500;

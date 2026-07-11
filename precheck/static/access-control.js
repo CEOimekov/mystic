@@ -1,5 +1,5 @@
 (function () {
-  const CACHE_BUST = "v=20260606-lock1";
+  const CACHE_BUST = "v=20260711-ronaldo1";
   const SESSION_KEYS = [
     "bluebookStudentEmail",
     "bluebookStudentName",
